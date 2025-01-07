@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://bhp4ddwjht6sk"]
+
+[ext_resource type="Script" path="res://Scenes/GridBuilder.gd" id="1_tl6vg"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dur6a"]
+size = Vector3(0.2, 0.2, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_55m05"]
+size = Vector3(0.2, 0.2, 0.2)
+
+[node name="GridScene" type="Node3D"]
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+script = ExtResource("1_tl6vg")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_dur6a")
+
+[node name="MultiMeshInstance3D" type="MultiMeshInstance3D" parent="RigidBody3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+mesh = SubResource("BoxMesh_55m05")
