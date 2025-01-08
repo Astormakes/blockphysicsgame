@@ -2,8 +2,8 @@ extends Control
 
 var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
 
-var world: PackedScene = load("res://Scenes/World.tscn")
-var player_scene: PackedScene = load("res://Scenes/player.tscn")
+var world: PackedScene = load("res://Scenes/World/World.tscn")
+var player_scene: PackedScene = load("res://Scenes/Player/player.tscn")
 
 var world_scene: Node = null
 
