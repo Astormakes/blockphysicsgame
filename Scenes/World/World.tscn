@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bvk308uh4rir3"]
+[gd_scene load_steps=9 format=3 uid="uid://bvk308uh4rir3"]
 
 [ext_resource type="Script" path="res://Scenes/World/worldManager.gd" id="1_3gftd"]
 
@@ -20,7 +20,13 @@ glow_enabled = true
 [sub_resource type="BoxShape3D" id="BoxShape3D_5tdn8"]
 size = Vector3(20, 0.5, 20)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_otnm7"]
+transparency = 1
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 1, 0.0784314)
+
 [sub_resource type="BoxMesh" id="BoxMesh_51tax"]
+material = SubResource("StandardMaterial3D_otnm7")
 size = Vector3(20, 0.5, 20)
 
 [node name="World" type="Node"]

@@ -2,6 +2,13 @@ extends Node
 
 var blockcatalog: Dictionary = {}
 
+var up = Vector3.UP
+var down = Vector3.DOWN
+var left = Vector3.LEFT
+var right = Vector3.RIGHT
+var forward = Vector3.FORWARD
+var back = Vector3.BACK
+
 
 # Initialize blocks in the catalog
 func _ready():
@@ -175,5 +182,6 @@ func initialize_block_catalog():
 		"cost": 4,
 		"mass": 1.5,
 		"maxHP": 30,
-		"size": Vector3(0.6,0.2,0.2)
+		"size": Vector3(0.6,0.2,0.2),
+		"flows": [up,forward,left,right]
 	}

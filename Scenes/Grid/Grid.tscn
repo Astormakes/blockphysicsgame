@@ -3,13 +3,6 @@
 [ext_resource type="Script" path="res://Scenes/Grid/GridBuilder.gd" id="1_7g1g4"]
 [ext_resource type="Script" path="res://Scenes/Grid/GridRooms.gd" id="2_x2bth"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_5yu2a"]
-size = Vector3(0.15, 0.15, 0.15)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3ni8x"]
-vertex_color_use_as_albedo = true
-albedo_color = Color(0.0681625, 0.404601, 0.453141, 1)
-
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_eraoo"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
@@ -21,14 +14,16 @@ properties/2/path = NodePath(".:sleeping")
 properties/2/spawn = true
 properties/2/replication_mode = 1
 
+[sub_resource type="BoxMesh" id="BoxMesh_5yu2a"]
+size = Vector3(0.15, 0.15, 0.15)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3ni8x"]
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.0681625, 0.404601, 0.453141, 1)
+
 [node name="GridScene" type="RigidBody3D"]
 center_of_mass_mode = 1
 script = ExtResource("1_7g1g4")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-mesh = SubResource("BoxMesh_5yu2a")
-skeleton = NodePath("../MeshInstance3D")
-surface_material_override/0 = SubResource("StandardMaterial3D_3ni8x")
 
 [node name="Rooms" type="Node" parent="."]
 script = ExtResource("2_x2bth")
