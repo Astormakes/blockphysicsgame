@@ -6,7 +6,7 @@ var Positions: Array
 var minVec: Vector3
 var maxVec: Vector3
 
-var directions: Array = [Vector3.LEFT * 0.2, Vector3.FORWARD * 0.2, Vector3.DOWN * 0.2, Vector3.BACK * 0.2]
+var directions: Array = [Vector3i.LEFT,Vector3i.FORWARD, Vector3i.RIGHT, Vector3i.UP, Vector3i.FORWARD, Vector3i.BACK,Vector3i.DOWN]
 
 var rooms: Array = []
 
@@ -16,6 +16,8 @@ var z: float
 
 var checkspeed = 1000
 var work: bool = false
+
+var found
 
 var counter = 0
 
@@ -34,61 +36,61 @@ func Parts_update(Send: Dictionary) -> void:
 		minVec = minVec.min(pos)
 		maxVec = maxVec.max(pos)
 	
-	x = minVec.x - 0.2
-	y = minVec.y - 0.2
-	z = minVec.z - 0.2  # You can adjust this offset if necessary
+	x = minVec.x - 1
+	y = minVec.y - 1
+	z = minVec.z - 1  # You can adjust this offset if necessary
 	
 	work = true
 	rooms.clear()
-	
+
 func _process(delta: float) -> void:
 	counter += 1
 	
 	if counter > 1:
 		counter = 0
-		run_rooms()
-	
+		#run_rooms()
+		
 	if Input.is_action_just_pressed("debugg"):
 		run_rooms()
 
 func run_rooms():
 	if work:
-		for l in range(100):
-			var pos: Vector3 = Vector3(x, y, z)
-			#$"../MeshInstance3D".transform.origin = pos
+		for l in range(1):
+			var pos: Vector3i = Vector3(x, y, z)
+			$"../MeshInstance3D".transform.origin = Vector3(pos)/5
 			
 			if Positions.has(pos):  # Check if the position is occupied
-				#print("--occupied moving on")
-				x += 0.2  # If occupied, check the next block
+				print("--occupied moving on")
+				x += 1  # If occupied, check the next block
 			else:
-				#print("--free pace")
-				var found = false
+				found = null
 				for dir in directions:
-					var check: Vector3 = dir + pos
-					#print(check)
-					for room in rooms:
-						for x in room:
-							if check.is_equal_approx(x):
+					var check = dir + pos
+					for i in range(rooms.size()):
+						var room = rooms[i]
+						if room.has(check):
+							if found != null:
+								if found != i:
+									print(rooms)
+									print("need to merge these to arrays and remove the old duplicated one lol. or somethink like that.")
+							else:
+								print("neigh found")
 								room.append(pos)
-								found = true
+								found = i
 								break
-						if found:
-							break
-					if found:
-						break
-				if found == false:
+				if found == null:
 					rooms.append([pos])
-					#print("new room discoverd ->",pos)
+					print("new room discoverd ->",pos)
 				
-				x += 0.2
+				x += 1
 				
-			if x > maxVec.x+0.2:
-				x = minVec.x-0.2  # Reset x to the start position for the next line
-				y += 0.2  # Move to the next line
-			if y > maxVec.y+0.2:
-				y = minVec.y-0.2  # Reset y for the next depth level
-				z += 0.2  # Move to the next z depth level
-			if z > maxVec.z+0.2:
+			if x > maxVec.x+1:
+				x = minVec.x-1  # Reset x to the start position for the next line
+				y += 1  # Move to the next line
+			if y > maxVec.y+1:
+				y = minVec.y-1  # Reset y for the next depth level
+				z += 1  # Move to the next z depth level
+			if z > maxVec.z+1:
 				work = false  # End the work after checking all blocks
 				print("Finished, ", rooms.size(), " rooms found!")
 				break
