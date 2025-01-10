@@ -1,95 +1,107 @@
 extends Node
 
 var Parts: Dictionary = {}
-var Positions: Array
 
-var minVec: Vector3
-var maxVec: Vector3
 
-var directions: Array = [Vector3i.LEFT,Vector3i.FORWARD, Vector3i.RIGHT, Vector3i.UP, Vector3i.FORWARD, Vector3i.BACK,Vector3i.DOWN]
-
-var rooms: Array = []
-
-var x: float
-var y: float
-var z: float
-
-var checkspeed = 1000
 var work: bool = false
 
-var found
 
-var counter = 0
+var thread1 : Thread
+
+var Positions:Array
+
+var semaphore: Semaphore
+var mutex: Mutex
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var gridscene = get_node("..")
 	gridscene.connect("parts_updated", Parts_update)
+	thread1 = Thread.new()
+	thread1.start(run_rooms)
+	semaphore = Semaphore.new()
+	mutex = Mutex.new()
+	
+func _exit_tree() -> void:
+		semaphore.post()
+		thread1.wait_to_finish()
+
 
 func Parts_update(Send: Dictionary) -> void:
-	minVec = Vector3(9999, 9999, 9999)  # Start with a high min value
-	maxVec = Vector3(-9999, -9999, -9999)  # Start with a low max value
 	Parts = Send
-	Positions = Parts.keys()
-	
-	for pos in Positions:
-		minVec = minVec.min(pos)
-		maxVec = maxVec.max(pos)
-	
-	x = minVec.x - 1
-	y = minVec.y - 1
-	z = minVec.z - 1  # You can adjust this offset if necessary
-	
+	mutex.lock()
 	work = true
-	rooms.clear()
-
-func _process(delta: float) -> void:
-	counter += 1
+	mutex.unlock()
 	
-	if counter > 1:
-		counter = 0
-		#run_rooms()
+func _process(delta: float) -> void:
+	if work:
+		mutex.lock()
+		Positions = Parts.keys()
+		mutex.unlock()
 		
-	if Input.is_action_just_pressed("debugg"):
-		run_rooms()
+		semaphore.post()
 
 func run_rooms():
-	if work:
-		for l in range(1):
+
+	var directions: Array = [Vector3i.LEFT,Vector3i.FORWARD, Vector3i.RIGHT, Vector3i.UP, Vector3i.FORWARD, Vector3i.BACK,Vector3i.DOWN]
+	
+	var x: float
+	var y: float
+	var z: float
+	
+	
+	var minVec: Vector3
+	var maxVec: Vector3
+	
+	var found
+	
+	var rooms: Array[Array] = []
+	while true:
+		semaphore.wait()
+		minVec = Vector3(9999, 9999, 9999)  # Start with a high min value
+		maxVec = Vector3(-9999, -9999, -9999) 
+			
+		for pos in Positions:
+			minVec = minVec.min(pos)
+			maxVec = maxVec.max(pos)
+			
+		x = minVec.x - 1
+		y = minVec.y - 1
+		z = minVec.z - 1  # You can adjust this offset if necessary
+			
+		rooms.clear()
+			
+		while true:
 			var pos: Vector3i = Vector3(x, y, z)
-			$"../MeshInstance3D".transform.origin = Vector3(pos)/5
+			#$"../MeshInstance3D".transform.origin = Vector3(pos)/5
 			
 			if Positions.has(pos):  # Check if the position is occupied
-				print("--occupied moving on")
 				x += 1  # If occupied, check the next block
 			else:
 				found = null
 				for dir in directions:
 					var check = dir + pos
 					for i in range(rooms.size()):
-						var room = rooms[i]
+						var room:Array = rooms[i]
 						if room.has(check):
 							if found != null:
 								if found != i:
-									print("merging:",rooms.size()," ",rooms)
-									print()
-									var new = rooms[found]+rooms[i]
-									print(new)
-									#rooms.append_array()
-									rooms.remove_at(found)
-									rooms.remove_at(i)
-									
-									print("merging:",rooms.size()," ",rooms)
+									var room1 = rooms[found]
+									var room2 = rooms[i]
+									rooms.erase(room1)
+									rooms.erase(room2)
+									rooms.append(Array(room1 + room2))
 									found = null
 									break
 							else:
-								print("neigh found")
+								#print("neigh found")
 								room.append(pos)
 								found = i
 								break
 				if found == null:
-					rooms.append([pos])
-					print("new room discoverd ->",pos)
+					var newRoom:Array = [pos]
+					rooms.append(newRoom)
+					#print("new room discoverd ->",pos)
 				
 				x += 1
 				
@@ -100,6 +112,8 @@ func run_rooms():
 				y = minVec.y-1  # Reset y for the next depth level
 				z += 1  # Move to the next z depth level
 			if z > maxVec.z+1:
-				work = false  # End the work after checking all blocks
+				mutex.lock()
+				work = false
+				mutex.unlock()
 				print("Finished, ", rooms.size(), " rooms found!")
 				break

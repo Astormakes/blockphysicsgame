@@ -1,6 +1,6 @@
 extends Node
 
-var blockcatalog: Dictionary = {}
+const var blockcatalog: Dictionary = {}
 
 var up = Vector3.UP
 var down = Vector3.DOWN
