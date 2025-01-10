@@ -10,6 +10,8 @@ var thread1 : Thread
 
 var Positions:Array
 
+var end = false
+
 var semaphore: Semaphore
 var mutex: Mutex
 
@@ -23,6 +25,7 @@ func _ready() -> void:
 	mutex = Mutex.new()
 	
 func _exit_tree() -> void:
+		end = true
 		semaphore.post()
 		thread1.wait_to_finish()
 
@@ -57,7 +60,7 @@ func run_rooms():
 	
 	var rooms: Array[Array] = []
 	while true:
-		semaphore.wait()
+		
 		minVec = Vector3(9999, 9999, 9999)  # Start with a high min value
 		maxVec = Vector3(-9999, -9999, -9999) 
 			
@@ -73,7 +76,6 @@ func run_rooms():
 			
 		while true:
 			var pos: Vector3i = Vector3(x, y, z)
-			#$"../MeshInstance3D".transform.origin = Vector3(pos)/5
 			
 			if Positions.has(pos):  # Check if the position is occupied
 				x += 1  # If occupied, check the next block
@@ -117,3 +119,6 @@ func run_rooms():
 				mutex.unlock()
 				print("Finished, ", rooms.size(), " rooms found!")
 				break
+		semaphore.wait()
+		if end:
+			break

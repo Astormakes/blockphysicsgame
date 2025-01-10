@@ -1,25 +1,14 @@
 extends Node
 
-const var blockcatalog: Dictionary = {}
+const up = Vector3.UP
+const down = Vector3.DOWN
+const left = Vector3.LEFT
+const right = Vector3.RIGHT
+const forward = Vector3.FORWARD
+const back = Vector3.BACK
 
-var up = Vector3.UP
-var down = Vector3.DOWN
-var left = Vector3.LEFT
-var right = Vector3.RIGHT
-var forward = Vector3.FORWARD
-var back = Vector3.BACK
-
-
-# Initialize blocks in the catalog
-func _ready():
-	initialize_block_catalog()
-
-func _process(_delta: float) -> void:
-	pass
-
-# Function to populate the block catalog with data
-func initialize_block_catalog():
-	blockcatalog[0] = {
+const blockcatalog: Dictionary = {
+	0:{
 		"showName": "Metal Block",
 		"path": "",
 		"mesh": "res://Meshes/DefaultBoxMesh.tres",
@@ -30,8 +19,8 @@ func initialize_block_catalog():
 		"mass": 7,
 		"maxHP": 500,
 		"size": Vector3(0.2,.2,0.2)
-	}
-	blockcatalog[1] = {
+	},
+	1:{
 		"showName": "Alu Block",
 		"path": "",
 		"mesh": "res://Meshes/DefaultBoxMesh.tres",
@@ -42,8 +31,8 @@ func initialize_block_catalog():
 		"mass": 3,
 		"maxHP": 200,
 		"size": Vector3(0.2,.2,0.2)
-	}
-	blockcatalog[2] = {
+	},
+	2:{
 		"showName": "Wood Block",
 		"path": "",
 		"mesh": "res://Meshes/DefaultBoxMesh.tres",
@@ -54,8 +43,8 @@ func initialize_block_catalog():
 		"mass": 1,
 		"maxHP": 30,
 		"size": Vector3(0.2,.2,0.2)
-	}
-	blockcatalog[3] = {
+	},
+	3:{
 		"showName": "Lead Block",
 		"path": "",
 		"mesh": "res://Meshes/DefaultBoxMesh.tres",
@@ -66,8 +55,8 @@ func initialize_block_catalog():
 		"mass": 25,
 		"maxHP": 200,
 		"size": Vector3(0.2,.2,0.2)
-	}	
-	blockcatalog[4] = {
+	},
+	4:{
 		"showName": "Metal 1x1x1 Slope",
 		"path": "",
 		"mesh": "res://Meshes/1x1x1 Slope.tres",
@@ -79,8 +68,8 @@ func initialize_block_catalog():
 		"mass": 3.5,
 		"maxHP": 30,
 		"size": Vector3(0.2,0.2,0.2)
-	}
-	blockcatalog[5] = {
+	},
+	5:{
 		"showName": "Alu 1x1x1 Slope",
 		"path": "",
 		"mesh": "res://Meshes/1x1x1 Slope.tres",
@@ -92,8 +81,8 @@ func initialize_block_catalog():
 		"mass": 1.5,
 		"maxHP": 100,
 		"size": Vector3(0.2,0.2,0.2)
-	}
-	blockcatalog[6] = {
+	},
+	6:{
 		"showName": "Wood 1x1x1 Slope",
 		"path": "",
 		"mesh": "res://Meshes/1x1x1 Slope.tres",
@@ -105,8 +94,8 @@ func initialize_block_catalog():
 		"mass": 0.25,
 		"maxHP": 30,
 		"size": Vector3(0.2,0.2,0.2)
-	}
-	blockcatalog[7] = {
+	},
+	7:{
 		"showName": "Metal 1x1x2 Slope",
 		"path": "",
 		"mesh": "res://Meshes/1x1x2 Slope.obj",
@@ -118,8 +107,8 @@ func initialize_block_catalog():
 		"mass": 7,
 		"maxHP": 500,
 		"size": Vector3(0.4,0.2,0.2)
-	}
-	blockcatalog[8] = {
+	},
+	8:{
 		"showName": "Alu 1x1x2 Slope",
 		"path": "",
 		"mesh": "res://Meshes/1x1x2 Slope.obj",
@@ -131,8 +120,8 @@ func initialize_block_catalog():
 		"mass": 3,
 		"maxHP": 200,
 		"size": Vector3(0.4,0.2,0.2)
-	}
-	blockcatalog[9] = {
+	},
+	9:{
 		"showName": "Wood 1x1x2 Slope",
 		"path": "",
 		"mesh": "res://Meshes/1x1x2 Slope.obj",
@@ -144,8 +133,8 @@ func initialize_block_catalog():
 		"mass": 1,
 		"maxHP": 30,
 		"size": Vector3(0.4,0.2,0.2)
-	}
-	blockcatalog[10] = {
+	},
+	10:{
 		"showName": "Metal 1x1x3 Slope",
 		"path": "",
 		"mesh": "res://Meshes/1x1x3 Slope.obj",
@@ -157,8 +146,8 @@ func initialize_block_catalog():
 		"mass": 10.5,
 		"maxHP": 30,
 		"size": Vector3(0.6,0.2,0.2)
-	}
-	blockcatalog[11] = {
+	},
+	11:{
 		"showName": "Alu 1x1x3 Slope",
 		"path": "",
 		"mesh": "res://Meshes/1x1x3 Slope.obj",
@@ -170,8 +159,8 @@ func initialize_block_catalog():
 		"mass": 7.5,
 		"maxHP": 100,
 		"size": Vector3(0.6,0.2,0.2)
-	}
-	blockcatalog[12] = {
+	},
+	12:{
 		"showName": "Wood 1x1x3 Slope",
 		"path": "",
 		"mesh": "res://Meshes/1x1x3 Slope.obj",
@@ -185,3 +174,4 @@ func initialize_block_catalog():
 		"size": Vector3(0.6,0.2,0.2),
 		"flows": [up,forward,left,right]
 	}
+}

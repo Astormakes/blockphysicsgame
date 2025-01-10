@@ -1,11 +1,21 @@
 extends Node
 
+const up = Vector3.UP
+const down = Vector3.DOWN
+const left = Vector3.LEFT
+const right = Vector3.RIGHT
+const forward = Vector3.FORWARD
+const back = Vector3.BACK
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+const fluidcatalog: Dictionary = {
+	0:{
+		"showName": "Frshwater",
+		"Weight": 1,
+		"Compression": 10000
+	},
+	1:{
+		"showName": "Nitrogen",
+		"Weight": 1,
+		"Compression": 10000
+	},
+}
