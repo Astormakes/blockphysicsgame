@@ -71,8 +71,17 @@ func run_rooms():
 						if room.has(check):
 							if found != null:
 								if found != i:
-									print(rooms)
-									print("need to merge these to arrays and remove the old duplicated one lol. or somethink like that.")
+									print("merging:",rooms.size()," ",rooms)
+									print()
+									var new = rooms[found]+rooms[i]
+									print(new)
+									#rooms.append_array()
+									rooms.remove_at(found)
+									rooms.remove_at(i)
+									
+									print("merging:",rooms.size()," ",rooms)
+									found = null
+									break
 							else:
 								print("neigh found")
 								room.append(pos)
