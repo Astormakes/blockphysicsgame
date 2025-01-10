@@ -58,6 +58,8 @@ func run_rooms():
 	
 	var found
 	
+	
+	var volumes: Array[float]
 	var rooms: Array[Array] = []
 	while true:
 		
@@ -73,7 +75,7 @@ func run_rooms():
 		z = minVec.z - 1  # You can adjust this offset if necessary
 			
 		rooms.clear()
-			
+		volumes.clear()	
 		while true:
 			var pos: Vector3i = Vector3(x, y, z)
 			
@@ -93,16 +95,25 @@ func run_rooms():
 									rooms.erase(room1)
 									rooms.erase(room2)
 									rooms.append(Array(room1 + room2))
+									var volume1 = volumes[i]
+									var volume2 = volumes[found]
+									volumes.erase(volume1)
+									volumes.erase(volume2)
+									volumes.append(volume1+volume2)
+									
 									found = null
+									#print("merging")
 									break
 							else:
-								#print("neigh found")
+								#print(i,"neigh found",volumes)
+								volumes[i] += 8
 								room.append(pos)
 								found = i
 								break
 				if found == null:
 					var newRoom:Array = [pos]
 					rooms.append(newRoom)
+					volumes.append(8)
 					#print("new room discoverd ->",pos)
 				
 				x += 1
@@ -117,7 +128,7 @@ func run_rooms():
 				mutex.lock()
 				work = false
 				mutex.unlock()
-				print("Finished, ", rooms.size(), " rooms found!")
+				print("Finished, ", rooms.size(), " rooms found!", volumes)
 				break
 		semaphore.wait()
 		if end:
