@@ -31,18 +31,12 @@ func _exit_tree() -> void:
 
 
 func Parts_update(Send: Dictionary) -> void:
-	Parts = Send
 	mutex.lock()
-	work = true
+	Parts = Send
+	Positions = Parts.keys()
 	mutex.unlock()
-	
-func _process(delta: float) -> void:
-	if work:
-		mutex.lock()
-		Positions = Parts.keys()
-		mutex.unlock()
-		
-		semaphore.post()
+	semaphore.post()
+
 
 func run_rooms():
 
@@ -126,10 +120,10 @@ func run_rooms():
 				z += 1  # Move to the next z depth level
 			if z > maxVec.z+1:
 				mutex.lock()
-				work = false
 				mutex.unlock()
 				print("Finished, ", rooms.size(), " rooms found!", volumes)
 				break
+		print(semaphore.try_wait())
 		semaphore.wait()
 		if end:
 			break
