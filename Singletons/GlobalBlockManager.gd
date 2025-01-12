@@ -67,7 +67,9 @@ const blockcatalog: Dictionary = {
 		"cost": 7,
 		"mass": 3.5,
 		"maxHP": 30,
-		"size": Vector3(0.2,0.2,0.2)
+		"size": Vector3(0.2,0.2,0.2),
+		"flows": [right,up,back,forward], # directions in which flow is allowed
+		"volume": 4 # Volume Per block
 	},
 	5:{
 		"showName": "Alu 1x1x1 Slope",
@@ -80,7 +82,9 @@ const blockcatalog: Dictionary = {
 		"cost": 20,
 		"mass": 1.5,
 		"maxHP": 100,
-		"size": Vector3(0.2,0.2,0.2)
+		"size": Vector3(0.2,0.2,0.2),
+		"flows": [right,up,back,forward], # directions in which flow is allowed
+		"volume": 4 # Volume Per block
 	},
 	6:{
 		"showName": "Wood 1x1x1 Slope",
@@ -93,7 +97,9 @@ const blockcatalog: Dictionary = {
 		"cost": 4,
 		"mass": 0.25,
 		"maxHP": 30,
-		"size": Vector3(0.2,0.2,0.2)
+		"size": Vector3(0.2,0.2,0.2),
+		"flows": [right,up,back,forward], # directions in which flow is allowed
+		"volume": 4 # Volume Per block
 	},
 	7:{
 		"showName": "Metal 1x1x2 Slope",
@@ -106,7 +112,9 @@ const blockcatalog: Dictionary = {
 		"cost": 13,
 		"mass": 7,
 		"maxHP": 500,
-		"size": Vector3(0.4,0.2,0.2)
+		"size": Vector3(0.4,0.2,0.2),
+		"flows": [right,up,back,forward],
+		"volume": 8
 	},
 	8:{
 		"showName": "Alu 1x1x2 Slope",
@@ -119,7 +127,9 @@ const blockcatalog: Dictionary = {
 		"cost": 35,
 		"mass": 3,
 		"maxHP": 200,
-		"size": Vector3(0.4,0.2,0.2)
+		"size": Vector3(0.4,0.2,0.2),
+		"flows": [right,up,back,forward],
+		"volume": 8
 	},
 	9:{
 		"showName": "Wood 1x1x2 Slope",
@@ -132,7 +142,9 @@ const blockcatalog: Dictionary = {
 		"cost": 7,
 		"mass": 1,
 		"maxHP": 30,
-		"size": Vector3(0.4,0.2,0.2)
+		"size": Vector3(0.4,0.2,0.2),
+		"flows": [right,up,back,forward],
+		"volume": 8
 	},
 	10:{
 		"showName": "Metal 1x1x3 Slope",
@@ -145,7 +157,9 @@ const blockcatalog: Dictionary = {
 		"cost": 7,
 		"mass": 10.5,
 		"maxHP": 30,
-		"size": Vector3(0.6,0.2,0.2)
+		"size": Vector3(0.6,0.2,0.2),
+		"flows": [right,up,back,forward],
+		"volume": 12
 	},
 	11:{
 		"showName": "Alu 1x1x3 Slope",
@@ -158,7 +172,9 @@ const blockcatalog: Dictionary = {
 		"cost": 20,
 		"mass": 7.5,
 		"maxHP": 100,
-		"size": Vector3(0.6,0.2,0.2)
+		"size": Vector3(0.6,0.2,0.2),
+		"flows": [right,up,back,forward],
+		"volume": 12
 	},
 	12:{
 		"showName": "Wood 1x1x3 Slope",
@@ -172,6 +188,7 @@ const blockcatalog: Dictionary = {
 		"mass": 1.5,
 		"maxHP": 30,
 		"size": Vector3(0.6,0.2,0.2),
-		"flows": [up,forward,left,right]
+		"flows": [right,up,back,forward],
+		"volume": 12
 	}
 }
