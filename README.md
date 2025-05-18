@@ -1,43 +1,75 @@
-This is a Game that i want to Create to fill a gap of highly technical games with great custommizability ... that also involves making the player completly dependant on his creations ...
+**Game Concept: A Deep, Customizable Technical Survival Sandbox**
 
-i have +5000h in Garrysmod Sandbox and one thing that i always was a little sad about is, that with the physgun and tool gun, im a god. Capable of mopving any Object and solving any Issue myself ... but in games like Spaceengieers that is not the case.
+## Summary
+This is a game I started building to fill a gap that ive been looking to fill for a while now. A highly technical, deeply customizable sandbox that makes the player entirely dependent on their own creations to survive and thrive.
 
-If you crashed a ship and it cant fly on its own amymore, then it and by extension mostlikely you, are stuck and you will have to work on a solution to get you out of that mess. i really liked that baout the game.
+It draws inspiration from several games, including:
 
-But Spaceengineers is missing techical Deph for me personally. I wish to create crazy machines and invent new forms of creating power. Make chemical Reacions or design my own method of transportation. 
+Stormworks – A technical block-based vehicle builder focused on Rescue Missions and suprisingly much techincal-depth.
 
-The Resolution for example in Minecraft is really corse with its 1x1x1 M blocks so i setout to make my game be based around 20x20x20 cm (8L) blocks... enabling the player to build belivable, scale, usefull and complex Machinery, Vehicles and Devices to aid him in every task imagneable.
+From the Depths – A less "realistic" war-machine builder with advanced WeaponSimulations.
 
-This game was started a little out of spite because i see all these awesome concepts in Stormworks but also so much waisted potential. Ive given up on this particular Project because i felt like i was allready mounting technical depth. I unfortenetly lack experiance for Projects of that scale since all my programming efforts have been in microcontrollers or other games where one is seldomly confronted with more then one file that has code in it.
+Noita – A surprising source of inspiration, thanks to its consistent world rules and deep emergent gameplay.
 
-The issue, that i was stuck at was: That the game needs to detect rooms and give them volumes so that the player can use them as storage for dirrefernt liquids and or vessel for chemical reacions. i got that close to working but allrady it was too slow. Allrady this feeled like i have backed myself into a programming corner. I have the hope that this might be starting point or at least a idea spark for someone else to make the game i so desperatly need. Maybe ill start a new one from the ground up trying to use what i lerned from here. And maybe ill have 15 of such attemds till i make something that i like. 
+### Why Noita?
+At first glance, Noita might not seem to fit with the others. But what makes Noita special is its consistency: every pixel follows very simelar rules. Even particles from portal effects can be collected and used for different things. If you happend to catch Fire and Water in the same Flask it makes Steam that and simelar reactions are a big part of the gameplay and are super saticfying and rewarding to use to your advantage.
 
-it was the Idea to make it very belivable. Like player does something and then the expected thing happens.
+### Personal Motivation
+With over 5000 hours in Garry's Mod, I loved the freedom and complexity that could be achived though Wiremodand and Sprops when building Cars and Dynos. The Physgun and the Toolgun enable great Precision while making the Player extremly powerfull... That though sometimes felt ... pointless. I sometimes wished i had to household with recources or build cranes just so i could use them for something that wouldnt otherwise be possible. Stormworks is able to convey that feeling a little bit. But its really inconsistent and limiting in some ways.
 
-I had all sorts of creazy ideas at the start that would combine and make new concepts:
+### Project Status
+This game hit technical roadblocks. I struggled with implementing a system to detect and measure rooms for fluid storage and chemical reactions. Performance quickly became an issue.
 
-- Blocks with different properties like weight, since everyblock is 8 liters that means: if its less then 8 KG it floats...
-- Pipes that allow liquids and rotation Output from for example an electric motor to be passed along between blocks.
-- bigger blocks like engines, electricmotors, gearboxes or heat exchangers, radiators, valves, pumps of variying sizes, pressure detector, temperaturedetectors pipe and volume, pressure switches and may more.
-- Pivots, hinges and anlike to create articulated machines and vehicles
-- Different liquids that react or behave in different ways.
-- Volumes should have temperatures and pressures that also effect the compunds inside.
-- liquids cant be compressed gases can always be compressed (and will uncompress) (a player could have the silly idea to make an Air engine and fill up an air tank to insane pressures and use only a bit of it to power a turbine .... like an air battery) maybe i can come up with scenarios where that might be necesarry... like a desert where many liquids instantly evaporate
-  - an example would be a room with water >100°c should make steam. one water should make 3 steam and "use up heat" to raise the pressure and effectivly work as a steamboiler that could power a turbine.
-  - a few example of other liquids or gases: oxygen/liquid oxygen, nitrogen/liquid nitrogen, diesel and diesel vapor, Water and steam, saltwater might deposit saltblocks or something (....) At the end there could be a lot of compounds that have simple temperature dependant rules: if diesel gets too hot it will evaporate create the gas and lower the temperate by a bit for example if diesel gas gets to hot (and oxygen is present) it will create some compound as exhaust and release a lot of it and heat for example.
-- Raw oil prosessing for example rawoil heated up makes light oil and heavy oil. light oil can be heated up even further and make diesel and later evaporate and so on... heavly oil be heated into could make sludge .... as like a dead end cemical that can be burned but at low effeciency maybe other chemical pathways also lead to sludge
-- Hydraulics: it has reasons its being used for almost everything machinery IRL. Heavy oil can be used for hydraulics
-- Heat transfers thought blocks so heat management becomes a thing.
-- this game should have survival aspects. (food, dinking clean water)
-- "basebuilding" (grids like vehicles can be static too)
-- some sort of resource system that enables refining and crafting of blocks.
-- inputs and outputs on technicalblocks simelar to wiremod/stormworks/from the Depths.
-- curde weather system
+Although I've paused this project, I hope it serves as a spark for someone else — or maybe I’ll reboot it from scratch with lessons learned. Maybe it takes me an other 10 aproches to get a working Start to a Game scratches that ich for me. 
 
-i think the previous ones i had in mind when i started but now im feature creeping: maybe these would be for big updates:
-- an a somewhat extensive chunkbased weather simulation.
-- maybe somesort of wildlife and population simulation. players hungry eat fish. Beat is hungry eat player xD
-- for a later major update: seansons? that would afffect lots of things like the wildlife and weather.
+## Design Goals
+The core design philosophy is believability: when a player does something, the expected thing should happen, consistently. Cemical Reactions should be discoverable, logical and belivable.
 
+### Block Size and Scale
+I designed this game around 20x20x20cm blocks which happend to result in a nice round number of 8 liters Volume per Block. This resolution allows for realistic, to-Scale and complex machinery. Stormworks comes very close to that with its 30x30x30 Gridsize and it shows in the way creations can be build and the complexity that is achivable but i think a little smaler cant hurt. 
 
-im unsure if building per hand and breakable blocks should be a thing... not having them would allow to do all volume calculations and room recignition when the vehicle is spawning in instead of on the fly. Breakable blocks and placing by hand would be sick too though..... and strenghten the survival, resource handling and crafting aspect ... i want to convey the feeling of a harsh enviroment that will kill you if you let it and force the player to really think about how to survive and be paranoid.
+### Building
+Stormworks way around Building, is dispite its also very small Blocks suprinsingly quiuck. Just by enabling the Player to drag a chain of blocks or a plane the player can place great amounts of blocks very quick. 
+
+## Key Mechanics & Features
+
+### Fluid and Gas Systems
+
+- Since all blocks are 8 liters: if a block weighs <8kg, it floats.
+- Blocks with different physical properties (weight, density, etc.).
+- Liquids are incompressible; gases are compressible.
+Volumes, like rooms and Containers have a temperature and pressure to affect their Insides.
+- Steam generation, combustion, evaporation, condensation — all based on basic thermodynamic rules.
+  - Example: Diesel vapor + heat + oxygen = combustion, releasing energy and byproducts.
+  - Complex Reactions and Materials
+  - Crude oil refining (raw → light oil → diesel → vapor).
+  - Heavy oil → sludge (low-efficiency fuel, or dead-end compound).
+
+- Heat transfer through blocks, requiring real heat management.
+- Blocks like: Pumps, Valves, Heatexchangers, Radiators, Engines, ElectricMotors, HydraulicMotors, Pistons, Hinges (to create atriculated Creations)
+- Hydraulic systems using heavy oil.
+- Pipes for transporting fluids and mechanical power (like rotation).
+- Sensors (pressure, temperature) and logic (switches, thresholds).
+- Static structures ("bases").
+- Survival Mechanics
+- Hunger, thirst, weather exposure.
+- crafting and refining systems.
+- Hostile environments that force planning and engineering.
+- Build infrastructure to support power generation, food production, and survival.
+
+### Feature Wishlist & Future Ideas
+
+Some of these are big-picture ideas for future expansions:
+
+- Full chunk-based weather simulation with storms, wind, and temperature zones.
+
+- Ecosystems: wildlife that interacts with the player (e.g., predators, food chains).
+
+- Seasonal changes affecting weather, wildlife, and survival strategies.
+
+- Potential Population systems for NPCs or wildlife behavior.
+
+## Final Thoughts
+This project was born out of passion — and a bit of frustration. I see so much untapped potential in games like Stormworks, but also limitations. I wanted to push further.
+
+Even though I had to put this version on hold, this concept still burns bright in my mind. Whether it's me or someone else who brings it to life, I hope this README helps communicate what could be a new kind of game — one that’s deep, demanding, and incredibly rewarding to master.
