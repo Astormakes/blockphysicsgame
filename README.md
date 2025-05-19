@@ -73,3 +73,18 @@ Some of these are big-picture ideas for future expansions:
 This project was born out of passion — and a bit of frustration. I see so much untapped potential in games like Stormworks, but also limitations. I wanted to push further.
 
 Even though I had to put this version on hold, this concept still burns bright in my mind. Whether it's me or someone else who brings it to life, I hope this README helps communicate what could be a new kind of game — one that’s deep, demanding, and incredibly rewarding to master.
+
+## Controls
+
+this Game has common wasd and mouse controlls. With the Mousewheel you change the Block to build with
+
+U I O you cange the direction of  the block thats being placed. U and O for yaww I and K for pitch J and L for roll ... 
+J K L
+
+If you have build something with T you can step though or trigger the room detection that ive been working on
+
+with P you spawn a new Grid that you can start building on. 
+
+## news ! 
+
+This inspired me to do a little bit more Programming.
