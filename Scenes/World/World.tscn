@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://bvk308uh4rir3"]
 
-[ext_resource type="Script" path="res://Scenes/World/worldManager.gd" id="1_3gftd"]
+[ext_resource type="Script" uid="uid://f6sdel0mc1nw" path="res://Scenes/World/worldManager.gd" id="1_3gftd"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_nm5f3"]
 

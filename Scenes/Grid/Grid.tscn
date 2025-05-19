@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bhp4ddwjht6sk"]
 
-[ext_resource type="Script" path="res://Scenes/Grid/GridBuilder.gd" id="1_7g1g4"]
-[ext_resource type="Script" path="res://Scenes/Grid/GridRooms.gd" id="2_x2bth"]
+[ext_resource type="Script" uid="uid://c6bumu56mq4l3" path="res://Scenes/Grid/GridBuilder.gd" id="1_7g1g4"]
+[ext_resource type="Script" uid="uid://dt0bp2nuc4nu7" path="res://Scenes/Grid/GridRooms.gd" id="2_x2bth"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_eraoo"]
 properties/0/path = NodePath(".:position")

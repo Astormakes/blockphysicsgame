@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://bqnhsx5e1ruc"]
 
-[ext_resource type="Script" path="res://Scenes/Player/playerHandler.gd" id="1_mx4qx"]
-[ext_resource type="Script" path="res://Scenes/Player/playerMovement.gd" id="2_yxeup"]
-[ext_resource type="Script" path="res://Scenes/Player/playerBuilder.gd" id="3_eauo2"]
+[ext_resource type="Script" uid="uid://b04wod1u5ohb8" path="res://Scenes/Player/playerHandler.gd" id="1_mx4qx"]
+[ext_resource type="Script" uid="uid://cyy0tykwg37ac" path="res://Scenes/Player/playerMovement.gd" id="2_yxeup"]
+[ext_resource type="Script" uid="uid://2xocknn8h8i0" path="res://Scenes/Player/playerBuilder.gd" id="3_eauo2"]
 [ext_resource type="Material" uid="uid://c6h5b8nchgxnb" path="res://Materials/defaultStructualMaterial.tres" id="4_0i0fw"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_fcuv6"]
