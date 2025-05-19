@@ -31,15 +31,15 @@ func _process(delta: float) -> void:
 				velocity = velocity * runMul
 
 
-		$".".set_constant_force(delta*(velocity.rotated(Vector3.UP,$".".rotation.y)*inAir-$".".linear_velocity*movementDamping*inAir))
+		$".".set_constant_force(delta*(velocity.rotated(Vector3.UP,$".".rotation.y)*inAir-$".".linear_velocity*movementDamping*inAir)) # this is a dampener
 		
-		$".".apply_torque_impulse(delta*Vector3(0,-$".".angular_velocity.y*300,0))
+		$".".apply_torque_impulse(delta*Vector3(0,-$".".angular_velocity.y*300,0))  #this is dampening for the rotation of the player pill
 
 func _input(event):
 	if not Input.is_action_pressed("free_mouse"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		if event is InputEventMouseMotion:
-			Head.rotation_degrees.x = clamp(Head.rotation_degrees.x - event.relative.y * mouseSpeed,-80,90)
-			$".".apply_torque_impulse(Enginedelta*Vector3(0,-event.relative.x*mouseSpeed*500,0))
+			Head.rotation_degrees.x = clamp(Head.rotation_degrees.x - event.relative.y * mouseSpeed,-80,90) # this rotates the players head
+			$".".apply_torque_impulse(Enginedelta*Vector3(0,-event.relative.x*mouseSpeed*500,0)) # this rotates the playerpill based on mouseinput
 	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE) # this is what uncatches the mouse to close the game using alt key for example

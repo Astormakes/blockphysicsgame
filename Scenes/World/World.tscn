@@ -36,7 +36,7 @@ script = ExtResource("1_3gftd")
 replication_config = SubResource("SceneReplicationConfig_nm5f3")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://Scenes/Grid/Grid.tscn", "res://Scenes/Player/player.tscn")
+_spawnable_scenes = PackedStringArray("uid://bhp4ddwjht6sk", "uid://bqnhsx5e1ruc")
 spawn_path = NodePath("..")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]

@@ -30,6 +30,7 @@ func _process(_delta: float) -> void:
 			currentItemID -= 1
 			blockidchanged = true
 		
+		# Rotate the Angle at wich the Player wants to place the block
 		if Input.is_action_just_pressed("pitch_forward"):
 			RotationVector = RotationVector.rotated(Vector3.FORWARD,halfPI)
 		if Input.is_action_just_pressed("pitch_backwards"):
@@ -43,9 +44,9 @@ func _process(_delta: float) -> void:
 		if Input.is_action_just_pressed("yaw_right"):
 			RotationVector = RotationVector.rotated(Vector3.UP,-halfPI)
 		
-			
-			
-		if blockidchanged:
+		
+		
+		if blockidchanged: # select block for the player to build
 			ghost.mesh = load(GlobalBlockManager.blockcatalog[currentItemID].mesh)
 			ghostmaterial.albedo_color = GlobalBlockManager.blockcatalog[currentItemID].color * Color(1,1,1,0.5)
 			ghost.material_override = ghostmaterial
@@ -55,13 +56,13 @@ func _process(_delta: float) -> void:
 		
 		$Control/Label.text = str(currentItemID) + " " + GlobalBlockManager.blockcatalog[currentItemID].showName
 		
-		##
 		
-		if Input.is_action_just_pressed("spawn_grid"):
-			var pos = global_transform.origin + global_transform.basis.z * -2
+		
+		if Input.is_action_just_pressed("spawn_grid"): # tells the WorldManager that it should  create a block infront of where the player is looking.
+			var pos = global_transform.origin + global_transform.basis.z * -1.5 
 			GlobalSignals.triggernewGridRequested(name.to_int(),pos)
 		
-		if raycast.is_colliding() and is_multiplayer_authority(): #
+		if raycast.is_colliding() and is_multiplayer_authority():
 			ghost.visible = true
 			var hit_object = raycast.get_collider()
 			if hit_object:
@@ -88,17 +89,16 @@ func _process(_delta: float) -> void:
 
 # Pain.  Credit for the affine_inverse: https://www.reddit.com/r/godot/comments/17ki0r2/comment/k77use9/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
 # Pain 2. that was me who solved it. making it account for different sizes of blocks was a real mind breaker ... mostly emotioanlly ... the amount of chagnes i could make while still getting the same result is really incredible
-func get_global_block_pos(ref_object:Node3D,hitpos:Vector3,hitnormal:Vector3,size:Vector3,angle:Basis) -> Transform3D: 
-	var blocksize = size.rotated(angle.x,halfPI).abs().snapped(gridSize)
-	var dist = abs((blocksize.rotated(hitnormal,halfPI)).x)
-	var localpos = (ref_object.global_transform.inverse() *  (hitpos + hitnormal * dist/3)).snapped(gridSize)
-	
+func get_global_block_pos(ref_object:Node3D,hitpos:Vector3,hitnormal:Vector3,size:Vector3,angle:Basis) -> Transform3D: # this returnes the world position of the block the player can build
+	var blocksize = size.rotated(angle.x,halfPI).snapped(gridSize)
+	var dist = max((blocksize.rotated(hitnormal,halfPI)).x,0.2)
+	var localpos = (ref_object.global_transform.inverse() * hitpos + hitnormal*(dist-0.1)).snapped(gridSize)
 	return Transform3D(ref_object.transform.basis*angle,ref_object.to_global(localpos))
 
-func get_local_block_pos(ref_object:Node3D,hitpos:Vector3,hitnormal:Vector3,size:Vector3,angle:Basis) -> Transform3D: 
-	var blocksize = size.rotated(angle.x,halfPI).abs().snapped(gridSize)
-	var dist = abs((blocksize.rotated(hitnormal,halfPI)).x)
-	var localpos = (ref_object.global_transform.inverse() *  (hitpos + hitnormal * dist/3)).snapped(gridSize)
+func get_local_block_pos(ref_object:Node3D,hitpos:Vector3,hitnormal:Vector3,size:Vector3,angle:Basis) -> Transform3D: # this does the same without the transformatino for global positions.
+	var blocksize = size.rotated(angle.x,halfPI).snapped(gridSize)
+	var dist = max((blocksize.rotated(hitnormal,halfPI)).x,0.2)
+	var localpos = (ref_object.global_transform.inverse() * hitpos + hitnormal*(dist-0.1)).snapped(gridSize)
 	return Transform3D(angle,localpos)
 
 func get_local_looked_at(ref_object:Node3D,hitpos:Vector3,hitnormal:Vector3,angle:Basis) -> Transform3D: 
