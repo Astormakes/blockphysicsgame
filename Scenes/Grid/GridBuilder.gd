@@ -127,7 +127,7 @@ func spawn_shape(pos: Transform3D, blockID: int):
 	Parts[intpos] = {
 		"type": block_data.type,
 		"position": Transform3D(pos.basis,intpos),
-		"BlockId": blockID,
+		"blockid": blockID,
 		"color": block_data.color,
 		"HP": block_data.maxHP,
 		"collider": collider,

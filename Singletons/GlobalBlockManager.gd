@@ -1,5 +1,15 @@
 extends Node
 
+# ___ rules ____
+#
+# Each Block thats not a block needs to have flows declared
+# Only 
+#
+#
+#
+#
+#
+
 const up = Vector3.UP
 const down = Vector3.DOWN
 const left = Vector3.LEFT
@@ -114,6 +124,7 @@ const blockcatalog: Dictionary = {
 		"maxHP": 500,
 		"size": Vector3(0.4,0.2,0.2),
 		"flows": [right,up,back,forward],
+		"flowsSecondary": [right,left,up,back,forward],
 		"volume": 8
 	},
 	8:{
@@ -129,6 +140,7 @@ const blockcatalog: Dictionary = {
 		"maxHP": 200,
 		"size": Vector3(0.4,0.2,0.2),
 		"flows": [right,up,back,forward],
+		"flowsSecondary": [right,left,up,back,forward],
 		"volume": 8
 	},
 	9:{
@@ -144,6 +156,7 @@ const blockcatalog: Dictionary = {
 		"maxHP": 30,
 		"size": Vector3(0.4,0.2,0.2),
 		"flows": [right,up,back,forward],
+		"flowsSecondary": [right,left,up,back,forward],
 		"volume": 8
 	},
 	10:{
@@ -159,6 +172,7 @@ const blockcatalog: Dictionary = {
 		"maxHP": 30,
 		"size": Vector3(0.6,0.2,0.2),
 		"flows": [right,up,back,forward],
+		"flowsSecondary": [right,left,up,back,forward],
 		"volume": 12
 	},
 	11:{
@@ -174,6 +188,7 @@ const blockcatalog: Dictionary = {
 		"maxHP": 100,
 		"size": Vector3(0.6,0.2,0.2),
 		"flows": [right,up,back,forward],
+		"flowsSecondary": [right,left,up,back,forward],
 		"volume": 12
 	},
 	12:{
@@ -189,6 +204,7 @@ const blockcatalog: Dictionary = {
 		"maxHP": 30,
 		"size": Vector3(0.6,0.2,0.2),
 		"flows": [right,up,back,forward],
+		
 		"volume": 12
 	}
 }
