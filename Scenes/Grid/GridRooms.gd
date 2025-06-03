@@ -85,35 +85,40 @@ func run_rooms():
 		print(test," ",blocklist[test])
 	print()
 	
+
+	print("parts",Parts)
+	
 	blockroom.clear()
-	roomVolumes.clear()
+	roomVolumes = [0]
 	var tasklist:PackedVector3Array = [] # has positions of blocks that have been found to be connected rooms in it...
-	var roomnumber:int = 0
 	while(true): # this will actually discover the rooms.
 		var pos = Vector3i(x,y,z)
 		print("___",Vector3i(x,y,z),"___")
 		
+		# new room discoverd
 		if blocklist[pos] != []: # if x,y,z has flows at all. add it to the tasklist to be ckecked.
 			tasklist.append(pos)
-			roomnumber += 1 # das problem ist wenn ein block als "surroundings" festgestellt wurde und blockroom auf 0 gesetzt wird, dann ein raum gefunden wird, und dann ein zweiter block der getrennt von den anderen surroundings
+			roomVolumes.append(0)
 			
-			print("found room:",roomnumber)
-			
+		var roomnumber = roomVolumes.size()-1
+		print("roomnumber:",roomnumber)
 		while not tasklist.is_empty(): #if there are blocks of a room known work though them.
 			var taskpos:Vector3i = tasklist[tasklist.size()-1] # pop
 			tasklist.remove_at(tasklist.size()-1) # pop
 			
 			print("blocks in que:", tasklist.size())
 			
-			#if Parts[taskpos].type == "block":
-			#	roomVolumes[roomnumber] += 8
-			#else:
-			#	roomVolumes[roomnumber] += GlobalBlockManager.blockcatalog[Parts[taskpos].blockid].volume
+			# maybe instead of checing below if a neiboughring block is surrounding Air... i should do it further up, where rooms are discoverd and check if the pos is near a the limits.
+			if blocklist[taskpos] == airblock:
+				roomVolumes[roomnumber] += 8
+			else:
+				#roomVolumes[roomnumber] += GlobalBlockManager.blockcatalog[Parts[taskpos].blockid].volume this is still an issue some blocks are not in Parts that are in Blocklist causing out of bounds/invalid access
 			
 			var issuroundings = false
 			for dirtemp:Vector3i in blocklist[taskpos]: # this should cycle though the flow directions of the current block. if a block that flows right, is has a block on its right side that flows left then that block should be added to the task list.
 				var checkpos:Vector3i = dirtemp+taskpos
 				
+				# maybe instead of checing below if a neiboughring block is surrounding Air... i should do it further up, where rooms are discoverd and just check if the pos is near a the limits.
 				if not blocklist.has(checkpos): # replace this with a < or > then for x,y,z to get a massive performace increase
 					blockroom.set(taskpos,0)
 					print("connected to surroundings",checkpos)
@@ -123,9 +128,12 @@ func run_rooms():
 					if blocklist[checkpos].has(-dirtemp):
 						print("connected room lol")
 						tasklist.append(checkpos)
+			
 			blocklist[taskpos] = []
 			if not issuroundings:
 				blockroom.set(taskpos,roomnumber)
+
+			
 		x += 1 
 		if x > maxX:
 			x = minX
@@ -135,11 +143,10 @@ func run_rooms():
 			z += 1
 		if z > maxZ:
 			break	
-		
-	print("roomnumber:",roomnumber)
-	#print("blockroom:",blockroom)
-	print("roomvolumes:",roomVolumes)
-	print("done")
 	
+	#print("blockroom:",blockroom)
+	print("roomvolumes:",roomVolumes)	
+	print("done")
+	print()
 	
 	
