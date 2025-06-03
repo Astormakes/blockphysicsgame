@@ -32,9 +32,9 @@ func Parts_update(Send: Dictionary) -> void:
 
 func run_rooms():
 	
-	var x:int = minVec.x
-	var y:int = minVec.y
-	var z:int = minVec.z
+	var x:int = minVec.x-1
+	var y:int = minVec.y-1
+	var z:int = minVec.z-1
 	
 	var maxX = maxVec.x
 	var maxY = maxVec.y
@@ -68,85 +68,88 @@ func run_rooms():
 					blocklist[pos].append(flow * Part.position.basis.inverse()) 
 			
 		x += 1 
-		if x > maxX:
+		if x > maxX+1:
 			x = minX
 			y += 1 
-		if y > maxY:
+		if y > maxY+1:
 			y = minY
 			z += 1
-		if z > maxZ:
+		if z > maxZ+1:
 			break	
 
-	x = minVec.x #resetting shit.
-	y = minVec.y
-	z = minVec.z
-	print("block list")
-	for test in blocklist.keys():
-		print(test," ",blocklist[test])
-	print()
+	x = minVec.x-1 #resetting shit.
+	y = minVec.y-1
+	z = minVec.z-1
+	#print("block list")
+	#for test in blocklist.keys():
+	#	print(test," ",blocklist[test])
+	#print()
 	
-
-	print("parts",Parts)
+	#print("parts",Parts)
 	
 	blockroom.clear()
 	roomVolumes = [0]
 	var tasklist:PackedVector3Array = [] # has positions of blocks that have been found to be connected rooms in it...
+
 	while(true): # this will actually discover the rooms.
 		var pos = Vector3i(x,y,z)
-		print("___",Vector3i(x,y,z),"___")
 		
 		# new room discoverd
+		var roomnumber = 0
 		if blocklist[pos] != []: # if x,y,z has flows at all. add it to the tasklist to be ckecked.
-			tasklist.append(pos)
-			roomVolumes.append(0)
+			#print("min",minVec)
+			#print("max",maxVec)
+			if (x <= minX or x >= maxX or
+				y <= minY or y >= maxY or
+				z <= minZ or z >= maxZ):
+				#print("perimiter block")
+				tasklist.append(pos)
+			else:
+				tasklist.append(pos)
+				roomVolumes.append(0)
+				roomnumber = roomVolumes.size()-1
 			
-		var roomnumber = roomVolumes.size()-1
-		print("roomnumber:",roomnumber)
+			#print("roomnumber:",roomnumber)
+			#print("___",Vector3i(x,y,z),"___")
+			
+			
 		while not tasklist.is_empty(): #if there are blocks of a room known work though them.
 			var taskpos:Vector3i = tasklist[tasklist.size()-1] # pop
 			tasklist.remove_at(tasklist.size()-1) # pop
 			
-			print("blocks in que:", tasklist.size())
+			blockroom.set(taskpos,roomnumber)
 			
-			# maybe instead of checing below if a neiboughring block is surrounding Air... i should do it further up, where rooms are discoverd and check if the pos is near a the limits.
-			if blocklist[taskpos] == airblock:
-				roomVolumes[roomnumber] += 8
+			if Parts.keys().has(taskpos):
+				roomVolumes[roomnumber] += GlobalBlockManager.blockcatalog[Parts[taskpos].blockid].volume
 			else:
-				#roomVolumes[roomnumber] += GlobalBlockManager.blockcatalog[Parts[taskpos].blockid].volume this is still an issue some blocks are not in Parts that are in Blocklist causing out of bounds/invalid access
+				roomVolumes[roomnumber] += 8
 			
-			var issuroundings = false
-			for dirtemp:Vector3i in blocklist[taskpos]: # this should cycle though the flow directions of the current block. if a block that flows right, is has a block on its right side that flows left then that block should be added to the task list.
+			# this should cycle though the flow directions of the current block. if a block that flows right, is has a block on its right side that flows left then that block should be added to the tasklist as its connected .
+			for dirtemp:Vector3i in blocklist[taskpos]: 
 				var checkpos:Vector3i = dirtemp+taskpos
-				
-				# maybe instead of checing below if a neiboughring block is surrounding Air... i should do it further up, where rooms are discoverd and just check if the pos is near a the limits.
-				if not blocklist.has(checkpos): # replace this with a < or > then for x,y,z to get a massive performace increase
-					blockroom.set(taskpos,0)
-					print("connected to surroundings",checkpos)
-					issuroundings = true
+				if (checkpos.x < minX or checkpos.x > maxX or
+					checkpos.y < minY or checkpos.y > maxY or
+					checkpos.z < minZ or checkpos.z > maxZ):
+						continue
+						#print("Checkpos out of bounds!")
 				else:
-					print("current block has:",blocklist[checkpos],"vs",dirtemp)
+					#print("current block has:",blocklist[checkpos],"vs",dirtemp)
 					if blocklist[checkpos].has(-dirtemp):
-						print("connected room lol")
 						tasklist.append(checkpos)
 			
 			blocklist[taskpos] = []
-			if not issuroundings:
-				blockroom.set(taskpos,roomnumber)
-
 			
 		x += 1 
-		if x > maxX:
+		if x > maxX+1:
 			x = minX
 			y += 1 
-		if y > maxY:
+		if y > maxY+1:
 			y = minY
 			z += 1
-		if z > maxZ:
+		if z > maxZ+1:
 			break	
 	
-	#print("blockroom:",blockroom)
+	print("blockroom:",blockroom)
 	print("roomvolumes:",roomVolumes)	
 	print("done")
 	print()
-	
-	
