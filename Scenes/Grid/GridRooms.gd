@@ -36,13 +36,13 @@ func run_rooms():
 	var y:int = minVec.y-1
 	var z:int = minVec.z-1
 	
-	var maxX = maxVec.x
-	var maxY = maxVec.y
-	var maxZ = maxVec.z
+	var maxX = maxVec.x+1
+	var maxY = maxVec.y+1
+	var maxZ = maxVec.z+1
 	
-	var minX = minVec.x
-	var minY = minVec.y
-	var minZ = minVec.z
+	var minX = minVec.x-1
+	var minY = minVec.y-1
+	var minZ = minVec.z-1
 	
 	
 	var blocklist:Dictionary # this will save the "state" of each block and it will be the grid for the depth first search: it will step though this list using the same while true shit xyz... then when it found an room block it will disvorder the whole room. each block thats been found to be in this room, will be set to 0 in this list so its ignored in the future.
@@ -68,24 +68,18 @@ func run_rooms():
 					blocklist[pos].append(flow * Part.position.basis.inverse()) 
 			
 		x += 1 
-		if x > maxX+1:
-			x = minX-1
+		if x > maxX:
+			x = minX
 			y += 1 
-		if y > maxY+1:
-			y = minY-1
+		if y > maxY:
+			y = minY
 			z += 1
-		if z > maxZ+1:
+		if z > maxZ:
 			break	
 
 	x = minVec.x-1 #resetting shit.
 	y = minVec.y-1
 	z = minVec.z-1
-	#print("block list")
-	#for test in blocklist.keys():
-#		print(test," ",blocklist[test])
-	#print()
-	
-	#print("parts",Parts)
 	
 	blockroom.clear()
 	roomVolumes.clear()
@@ -99,56 +93,55 @@ func run_rooms():
 		#print()
 		
 		# new room discoverd
-		if blocklist[pos] != []: # if x,y,z has flows at all. add it to the tasklist to be ckecked.
+		if blocklist[pos] != []: # if x,y,z has flows at all. add it to the tasklist
 			#print("new room:",pos)
 			tasklist.append(pos)
 			roomVolumes.append(0)
 			roomnumber = roomVolumes.size()-1
 			
-		#print("roomnumber:",roomnumber)
-		#print("___",Vector3i(x,y,z),"___")
+		print("roomnumber:",roomnumber)
+		print("___",Vector3i(x,y,z),"___")
 			
 			
 		while not tasklist.is_empty(): #if there are blocks of a room known work though them.
+			#print("tasklist:",tasklist.size())
 			var taskpos:Vector3i = tasklist[tasklist.size()-1] # pop
 			tasklist.remove_at(tasklist.size()-1) # pop
-			
-			blockroom.set(taskpos,roomnumber)
+			if (blocklist[taskpos] == []): continue # jump over entries that dont flow...
 			
 			if Parts.keys().has(taskpos):
-				roomVolumes[roomnumber] += GlobalBlockManager.blockcatalog[Parts[taskpos].blockid].volume
+				#roomVolumes[roomnumber] += GlobalBlockManager.blockcatalog[Parts[taskpos].blockid].volume /8
+				roomVolumes[roomnumber] += 1
 			else:
-				#print("Volume Airblock")
-				roomVolumes[roomnumber] += 8
+				roomVolumes[roomnumber] += 1
 			
 			# this should cycle though the flow directions of the current block. if a block that flows right, is has a block on its right side that flows left then that block should be added to the tasklist as its connected .
 			for dirtemp:Vector3i in blocklist[taskpos]: 
 				var checkpos:Vector3i = dirtemp+taskpos
-				if (checkpos.x < minX-1 or checkpos.x > maxX+1 or
-					checkpos.y < minY-1 or checkpos.y > maxY+1 or
-					checkpos.z < minZ-1 or checkpos.z > maxZ+1):
-						continue
-						#print("ouf of bounds")
+				if (checkpos.x < minX or checkpos.x > maxX or
+					checkpos.y < minY or checkpos.y > maxY or
+					checkpos.z < minZ or checkpos.z > maxZ):
+						print("ouf of bounds")
 				else:
-					#print("current block has:",blocklist[checkpos],"vs",dirtemp)
+					print("current block has:",blocklist[checkpos],"vs",dirtemp)
 					if blocklist[checkpos].has(-dirtemp):
 						tasklist.append(checkpos)
 			
 			blocklist[taskpos] = []
-			
+			blockroom.set(taskpos,roomnumber)
+			print("done:",taskpos,",")
 		x += 1 
-		if x > maxX+1:
-			x = minX-1
+		if x > maxX:
+			x = minX
 			y += 1 
-		if y > maxY+1:
-			y = minY-1
+		if y > maxY:
+			y = minY
 			z += 1
-		if z > maxZ+1:
+		if z > maxZ:
 			break	
 		
-
 	
-	print("blockroom:",blockroom)
+	#print("blockroom:",blockroom)
 	print("roomvolumes:",roomVolumes)	
 	print("done")
 	print()
