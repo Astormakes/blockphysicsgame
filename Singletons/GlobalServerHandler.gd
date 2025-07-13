@@ -7,6 +7,8 @@ var player_scene: PackedScene = load("res://Scenes/Player/player.tscn")
 
 var world_scene: Node = null
 
+var players = [] # ment for later, checking if a player is nearing a ungenerated region
+
 func _ready() -> void:
 	pass
 
@@ -26,8 +28,7 @@ func _on_host(port: int) -> void:
 	add_child(world_scene)
 	
 	# Add the host player
-	add_player(multiplayer.get_unique_id())
-
+	var newplayer = add_player(multiplayer.get_unique_id())
 # Join as a client
 func _on_join(ip: String, port: int) -> void:
 	peer.create_client(ip, port)
@@ -49,6 +50,7 @@ func add_player(id: int):
 	
 	var player = player_scene.instantiate()
 	player.name = str(id)
+	player.transform.origin.y += 15
 	world_scene.add_child(player) # Add to the world scene
 	
 # Handle a new player connection (server only)

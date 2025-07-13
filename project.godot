@@ -22,6 +22,10 @@ GlobalBlockManager="*res://Singletons/GlobalBlockManager.gd"
 GlobalServerHandler="*res://Singletons/GlobalServerHandler.gd"
 GlobalSignals="*res://Singletons/GlobalSignals.gd"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/terrain_3d/plugin.cfg")
+
 [input]
 
 enter={
@@ -135,3 +139,7 @@ debugg={
 3d/sleep_threshold_linear=0.8
 3d/sleep_threshold_angular=0.11
 3d/time_before_sleep=1.0
+
+[rendering]
+
+limits/spatial_indexer/threaded_cull_minimum_instances=2500

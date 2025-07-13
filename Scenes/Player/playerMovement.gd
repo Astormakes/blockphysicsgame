@@ -2,7 +2,7 @@ extends RigidBody3D
 
 var speed := 300000
 var mouseSpeed = 0.15
-var runMul = 2
+var runMul = 30
 var movementDamping = Vector3(50000,300,50000)
 var Enginedelta = 0
 
@@ -29,6 +29,10 @@ func _process(delta: float) -> void:
 				velocity.x += speed
 		if Input.is_action_pressed("run"):
 				velocity = velocity * runMul
+		if Input.is_action_pressed("jump"):
+				velocity.y += 500000
+		if Input.is_action_just_pressed("debugg"):
+			GlobalSignals.signalGenereateNewRegion(transform.origin)
 
 
 		$".".set_constant_force(delta*(velocity.rotated(Vector3.UP,$".".rotation.y)*inAir-$".".linear_velocity*movementDamping*inAir)) # this is a dampener

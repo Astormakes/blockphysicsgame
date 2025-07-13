@@ -12,6 +12,10 @@ func triggernewGridRequested(playerId1:int, Pos1:Vector3):
 func signalNewGridRequested(playerId1:int, Pos1:Vector3):
 	emit_signal("newGridRequested",playerId1, Pos1)
 
+signal GenereateNewRegion(pos:Vector3)
+
+func signalGenereateNewRegion(pos:Vector3):
+	emit_signal("GenereateNewRegion",pos)
 
 ## Block place Request
 signal blockplacementRequested(playerId2:int, gridname2:String, BlockId2:int, localPos2:Transform3D,currentItemID2:int)
