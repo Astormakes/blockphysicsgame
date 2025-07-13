@@ -32,7 +32,11 @@ func _process(delta: float) -> void:
 		if Input.is_action_pressed("jump"):
 				velocity.y += 500000
 		if Input.is_action_just_pressed("debugg"):
-			GlobalSignals.signalGenereateNewRegion(transform.origin)
+			var range = 4
+			for x in range(-range,range):
+				for y in range(-range,range):
+					GlobalSignals.signalGenereateNewRegion(transform.origin + Vector3(x,0,y)*512)
+
 
 
 		$".".set_constant_force(delta*(velocity.rotated(Vector3.UP,$".".rotation.y)*inAir-$".".linear_velocity*movementDamping*inAir)) # this is a dampener

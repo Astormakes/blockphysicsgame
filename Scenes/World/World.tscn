@@ -43,6 +43,8 @@ _shader_parameters = {
 &"noise_texture": SubResource("NoiseTexture2D_ouhkt"),
 &"projection_threshold": 0.8
 }
+show_region_grid = true
+show_vertex_grid = true
 show_checkered = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0nbjp"]
@@ -108,6 +110,9 @@ script = ExtResource("1_3gftd")
 data_directory = "res://Scenes/World/TerrainData"
 material = SubResource("Terrain3DMaterial_5jr8x")
 assets = SubResource("Terrain3DAssets_ouhkt")
+show_grid = true
+show_region_grid = true
+show_vertex_grid = true
 show_checkered = true
 top_level = true
 script = ExtResource("2_xf6vi")

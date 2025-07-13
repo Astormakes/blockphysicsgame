@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://bqnhsx5e1ruc"]
+[gd_scene load_steps=10 format=3 uid="uid://bqnhsx5e1ruc"]
 
 [ext_resource type="Script" uid="uid://b04wod1u5ohb8" path="res://Scenes/Player/playerHandler.gd" id="1_mx4qx"]
 [ext_resource type="Script" uid="uid://cyy0tykwg37ac" path="res://Scenes/Player/playerMovement.gd" id="2_yxeup"]
 [ext_resource type="Script" uid="uid://2xocknn8h8i0" path="res://Scenes/Player/playerBuilder.gd" id="3_eauo2"]
 [ext_resource type="Material" uid="uid://c6h5b8nchgxnb" path="res://Materials/defaultStructualMaterial.tres" id="4_0i0fw"]
+[ext_resource type="Script" uid="uid://mthxomq0pb3g" path="res://Scenes/Player/fps_counter.gd" id="4_htcer"]
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_fcuv6"]
 properties/0/path = NodePath("Body:position")
@@ -64,6 +65,17 @@ offset_left = 75.0
 offset_top = 53.0
 offset_right = 170.0
 offset_bottom = 93.0
+
+[node name="fps counter" type="Label" parent="Body/Head/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = -0.16
+anchor_right = 0.398
+offset_left = 28.0
+offset_top = 16.4
+offset_right = 67.08
+offset_bottom = 39.0
+script = ExtResource("4_htcer")
 
 [node name="Camera3D" type="Camera3D" parent="Body/Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
