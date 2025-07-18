@@ -39,7 +39,11 @@ func _ready() -> void:
 	noise2.frequency = 1/1000
 	
 	thread.start(runNoise)
-	
+	var range = 1
+	for x in range(-range,range):
+		for y in range(-range,range):
+			generateRegion(Vector3(x,0,y)*512)
+
 
 func _process(delta: float) -> void:
 	mutextaskwork.lock()
@@ -47,6 +51,9 @@ func _process(delta: float) -> void:
 		data.import_images([work[x], null, null], x, 0, 1000)
 		work.erase(x)
 	mutextaskwork.unlock()
+	
+	if Input.is_action_pressed("debugg"):
+		errosion(randi_range(-20,20),randi_range(-50,50))
 	
 func generateRegion(pos:Vector3):
 	#print(pos," recieved pos")
@@ -86,3 +93,32 @@ func runNoise():
 			mutextaskwork.lock()
 			work[Pos] = img
 			mutextaskwork.unlock()
+
+func errosion(x,y):
+	var curHight = data.get_height(Vector3(x,0,y))
+	var Sx = curHight - data.get_height(Vector3(x+1,0,y))
+	var Sy = curHight - data.get_height(Vector3(x,0,y+1))
+	data.set_height(Vector3(x,0,y),curHight-0.1)
+	var vel = 0
+	var Posx = x
+	var Posy = y
+	var Solid = 0.1
+	
+	for i in range(30):	
+		curHight = data.get_height(Vector3(Posx,0,Posy))
+		Sx = curHight - data.get_height(Vector3(Posx+1,0,Posy))
+		Sy = curHight - data.get_height(Vector3(Posx,0,Posy+1))
+			
+		vel = abs(Sx)+abs(Sy)
+		
+		Solid += vel-0.1
+		
+		Posx += Sx
+		Posy += Sy
+		
+		print("cH:",curHight)
+		print("s:",Sx," ",Sy)
+		print("p:",Posx," ",Posy)
+		print("v",vel)
+	
+	data.update_maps(Terrain3DRegion.TYPE_HEIGHT)

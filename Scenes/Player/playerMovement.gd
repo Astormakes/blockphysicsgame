@@ -31,11 +31,14 @@ func _process(delta: float) -> void:
 				velocity = velocity * runMul
 		if Input.is_action_pressed("jump"):
 				velocity.y += 500000
-		if Input.is_action_just_pressed("debugg"):
-			var range = 4
-			for x in range(-range,range):
-				for y in range(-range,range):
-					GlobalSignals.signalGenereateNewRegion(transform.origin + Vector3(x,0,y)*512)
+		#if Input.is_action_just_pressed("debugg"):
+		#	var t = Terrain3D.data.get_height(Vector3(0,0,0))
+		#	print(t)
+		#	Terrain3D.data.set_height(Vector3(0,0,0),t+0.1)
+			
+			#for x in range(-range,range):
+				#for y in range(-range,range):
+					#GlobalSignals.signalGenereateNewRegion(transform.origin + Vector3(x,0,y)*512)
 
 
 
