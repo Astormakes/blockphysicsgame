@@ -147,3 +147,5 @@ skeleton = NodePath("../..")
 transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, -0.1, 0)
 mesh = SubResource("PlaneMesh_xf6vi")
 surface_material_override/0 = SubResource("StandardMaterial3D_ouhkt")
+
+[node name="Label3D" type="Label3D" parent="."]
