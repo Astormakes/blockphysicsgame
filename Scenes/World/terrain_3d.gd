@@ -17,20 +17,15 @@ var work:Dictionary
 var noise = FastNoiseLite.new()
 var noiseoffset = 0
 
-var dropid = 0
-
-var debugSwitch = false
-var lables:Array
-
 func _ready() -> void:
 	print("Seed:",seed)
 	GlobalSignals.connect("GenereateNewRegion",generateRegion)
 	
-	region_size = 512 # 256 = 8KM^2 
+	region_size = 1024 # 512 = 16KM^2 
 	
 	noise.seed = seed
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
-	noise.fractal_octaves = 12
+	noise.fractal_octaves = 8
 	noise.fractal_lacunarity = 3.5 # Frequency multiplier between subsequent octaves. Increasing this value results in higher octaves producing noise with finer details
 	noise.fractal_gain = 0.30 # lower means more low frequenzy
 	noise.frequency = 1/6000.0 # higher means lower requenzy
@@ -41,7 +36,6 @@ func _ready() -> void:
 		for y in range(-range,range):
 			generateRegion(Vector3(x,0,y)*512)
 
-
 var dirX = 0
 var dirY = 0
 var speed = 0 # change down under
@@ -51,7 +45,7 @@ var evaporateSpeed = 0.05
 var inertia = 0.8 # 0.8 is a realistic looking value
 var sedimentCapacityFactor = 10
 var minSedimentCapacity = 0.01 
-var depositSpeed = 0.2
+var depositSpeed = 0.3
 var erodeSpeed = 0.1
 var gravity = 0.3 # 
 var posX = randi_range(0,10)
@@ -60,22 +54,12 @@ var posY = randi_range(0,10)
 func _process(delta: float) -> void:
 	mutextaskwork.lock()
 	for x in work.keys():
-		data.import_images([work[x], null, null], x, 0, 1000)
+		data.import_images([work[x], null,null], x, 0, 1000)
 		work.erase(x)
 	mutextaskwork.unlock()
-	
-	if Input.is_action_just_pressed("debug2"):
-		for entry in lables:
-			entry.free()
-		lables.clear()
-			
-	
-	if Input.is_action_just_pressed("debug3"):
-		debugSwitch = not debugSwitch
-		print(debugSwitch)
-	
+
 	if Input.is_action_pressed("debugg"):
-		for t in range(50):
+		for t in range(100):
 			posX = randi_range(-800,800)
 			posY = randi_range(-800,800)
 			water = 1.5
@@ -83,85 +67,69 @@ func _process(delta: float) -> void:
 			speed = 2
 			dirX = 0
 			dirY = 0 
-			dropid += 1
-			for i in range(50):
-				var gridX:int = int(posX)
-				var gridY:int = int(posY)
-				
-				var text = ""
-				
-				var curHight = data.get_height(Vector3(gridX,0,gridY))
+			
+			var curHight = data.get_height(Vector3(posX,0,posY))
+			if curHight < 1:
+				for x in range(-3,3):
+					for y in range(-3,3):
+						posX += x
+						posY += y
+						var avg = 0
+						avg += curHight - data.get_height(Vector3(posX+1,0,posY+1))
+						avg += curHight - data.get_height(Vector3(posX,0,posY+1))
+						avg += curHight - data.get_height(Vector3(posX-1,0,posY+1))
+						avg += curHight - data.get_height(Vector3(posX+1,0,posY))
+						avg += curHight - data.get_height(Vector3(posX-1,0,posY))
+						avg += curHight - data.get_height(Vector3(posX+1,0,posY-1))
+						avg += curHight - data.get_height(Vector3(posX,0,posY-1))
+						avg += curHight - data.get_height(Vector3(posX-1,0,posY-1))
+						data.set_height(Vector3(posX,0,posY),curHight - avg/8)
+			else:
+				for i in range(50):
+					var gridX:int = int(posX)
+					var gridY:int = int(posY)
+					var pos = Vector3(gridX,0,gridY)
+					var text = ""
 					
+					curHight = data.get_height(pos)
+						
+					var gradientX = data.get_height(Vector3(gridX+1,0,gridY)) - curHight
+					var gradientY = data.get_height(Vector3(gridX,0,gridY+1)) - curHight
 					
-				var gradientX = ((data.get_height(Vector3(gridX+1,0,gridY)) - curHight) + (curHight - data.get_height(Vector3(gridX-1,0,gridY))))/2
-				var gradientY = ((data.get_height(Vector3(gridX,0,gridY+1)) - curHight) + (curHight - data.get_height(Vector3(gridX,0,gridY-1))))/2
-				
-				dirX = (dirX * inertia - gradientX * (1 - inertia))
-				dirY = (dirY * inertia - gradientY * (1 - inertia))
-				
-				var maxlen = max(abs(dirX),abs(dirY))
-				if maxlen != 0:
-					dirX = dirX / maxlen
-					dirY = dirY / maxlen
-				
-				posX += dirX
-				posY += dirY
-				
-				var deltaHeight = data.get_height(Vector3(int(posX),0,int(posY))) - curHight
-				
-				var sedimentCapacity = max(-(deltaHeight/10) * speed * water * sedimentCapacityFactor, minSedimentCapacity)
-				
-				if (sediment > sedimentCapacity || deltaHeight > 0 || curHight < 0):
-					var amountToDeposit = 0
-					if deltaHeight > 0:
-						amountToDeposit = min (deltaHeight, sediment)
-						text += "deLvl:" + str(snapped(amountToDeposit,0.01)) + "\n"
-					else: if curHight < 0:
-						amountToDeposit = -deltaHeight/30
-						text += "subLvl:" + str(snapped(amountToDeposit,0.01)) + "\n"
+					dirX = (dirX * inertia - gradientX * (1 - inertia))
+					dirY = (dirY * inertia - gradientY * (1 - inertia))
+					
+					var maxlen = max(abs(dirX),abs(dirY))
+					if maxlen != 0:
+						dirX = dirX / maxlen
+						dirY = dirY / maxlen
+					
+					posX += dirX
+					posY += dirY
+					
+					var deltaHeight = data.get_height(Vector3(int(posX),0,int(posY))) - curHight
+					
+					var sedimentCapacity = max(-(deltaHeight/10) * speed * water * sedimentCapacityFactor, minSedimentCapacity)
+					
+					if (sediment > sedimentCapacity || deltaHeight > 0):
+						var amountToDeposit = 0
+						if deltaHeight > 0:
+							amountToDeposit = min (deltaHeight, sediment)
+						else:
+							amountToDeposit = (sediment - sedimentCapacity) * depositSpeed
 						sediment -= amountToDeposit
-						if sediment < 0.01:
-							break
+						
+						data.set_height(pos,curHight + amountToDeposit)
 					else:
-						amountToDeposit = (sediment - sedimentCapacity) * depositSpeed
-						text += "deCap:" + str(snapped(amountToDeposit,0.01)) + "\n"
-					sediment -= amountToDeposit
-					
-					data.set_height(Vector3(gridX,0,gridY),curHight + amountToDeposit)
-					
-				else:
-					var amountToErode = min((sedimentCapacity - sediment) * erodeSpeed, -deltaHeight)
-					sediment += amountToErode
-					
-					text += "er:" + str(snapped(amountToErode,0.01)) + "\n"
-					for X in range(-3,3):
-						for Y in range(-3,3):
-							var brushhight = data.get_height(Vector3(gridX+X,0,gridY+Y))
-							var dist = sqrt(X * X + Y * Y); # in the furure i bet a lot of time can be saved pre calculating the mask for the brush lol
-							data.set_height(Vector3(gridX+X,0,gridY+Y),brushhight - amountToErode/(dist+1))
-											
-				if debugSwitch:
-					var debugg = Label3D.new()
-					debugg.text = "test123"
-					debugg.pixel_size =  0.005
-					debugg.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-					add_child(debugg)
-					debugg.transform.origin = Vector3(gridX,curHight+1.5,gridY)
-					
-					dropid
-					text += "id:" + str(dropid) + "\n"
-					text += "dh:" + str(snapped(deltaHeight,0.001)) + "\n"
-					text += "S:" + str(snapped(sediment,0.001)) + "\n"
-					text += "SC:" + str(snapped(sedimentCapacity,0.001)) + "\n"
-					text += "speed:" + str(snapped(speed,0.001)) + "\n"
-					text += "wat:" + str(snapped(water,0.001)) + "\n"
-					debugg.text = text
-					lables.append(debugg)
-					
-				speed = sqrt(max(speed * speed - deltaHeight * gravity,0))
-				water *= (1 - evaporateSpeed)
+						var amountToErode = min((sedimentCapacity - sediment) * erodeSpeed, -deltaHeight)
+						sediment += amountToErode
+						
+						data.set_height(pos,curHight - amountToErode)
+						
+					speed = sqrt(max(speed * speed - deltaHeight * gravity,0))
+					water *= (1 - evaporateSpeed)
 		data.update_maps(Terrain3DRegion.TYPE_HEIGHT)
-	
+		data.update_maps(Terrain3DRegion.TYPE_CONTROL)
 
 func generateRegion(pos:Vector3):
 	var existingRegions = data.get_regions_all()

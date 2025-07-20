@@ -50,7 +50,7 @@ func add_player(id: int):
 	
 	var player = player_scene.instantiate()
 	player.name = str(id)
-	player.transform.origin.y += 15
+	player.transform.origin.y += 25
 	world_scene.add_child(player) # Add to the world scene
 	
 # Handle a new player connection (server only)
