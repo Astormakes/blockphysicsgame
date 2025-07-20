@@ -53,7 +53,7 @@ var sedimentCapacityFactor = 10
 var minSedimentCapacity = 0.01 
 var depositSpeed = 0.2
 var erodeSpeed = 0.1
-var gravity = 0.5 # 
+var gravity = 0.3 # 
 var posX = randi_range(0,10)
 var posY = randi_range(0,10)
 
@@ -75,24 +75,22 @@ func _process(delta: float) -> void:
 		print(debugSwitch)
 	
 	if Input.is_action_pressed("debugg"):
-		for t in range(30):
-			posX = randi_range(-1000,1000)
-			posY = randi_range(-1000,1000)
+		for t in range(50):
+			posX = randi_range(-800,800)
+			posY = randi_range(-800,800)
 			water = 1.5
 			sediment = 0
 			speed = 2
 			dirX = 0
 			dirY = 0 
 			dropid += 1
-			for i in range(60):
+			for i in range(50):
 				var gridX:int = int(posX)
 				var gridY:int = int(posY)
 				
 				var text = ""
 				
 				var curHight = data.get_height(Vector3(gridX,0,gridY))
-				if curHight < 0:
-					break
 					
 					
 				var gradientX = ((data.get_height(Vector3(gridX+1,0,gridY)) - curHight) + (curHight - data.get_height(Vector3(gridX-1,0,gridY))))/2
@@ -101,11 +99,10 @@ func _process(delta: float) -> void:
 				dirX = (dirX * inertia - gradientX * (1 - inertia))
 				dirY = (dirY * inertia - gradientY * (1 - inertia))
 				
-				var len = sqrt(dirX * dirX + dirY * dirY);
-
-				if len != 0:
-					dirX /= len
-					dirY /= len
+				var maxlen = max(abs(dirX),abs(dirY))
+				if maxlen != 0:
+					dirX = dirX / maxlen
+					dirY = dirY / maxlen
 				
 				posX += dirX
 				posY += dirY
@@ -113,12 +110,18 @@ func _process(delta: float) -> void:
 				var deltaHeight = data.get_height(Vector3(int(posX),0,int(posY))) - curHight
 				
 				var sedimentCapacity = max(-(deltaHeight/10) * speed * water * sedimentCapacityFactor, minSedimentCapacity)
-
-				if (sediment > sedimentCapacity || deltaHeight > 0):
+				
+				if (sediment > sedimentCapacity || deltaHeight > 0 || curHight < 0):
 					var amountToDeposit = 0
 					if deltaHeight > 0:
 						amountToDeposit = min (deltaHeight, sediment)
 						text += "deLvl:" + str(snapped(amountToDeposit,0.01)) + "\n"
+					else: if curHight < 0:
+						amountToDeposit = -deltaHeight/30
+						text += "subLvl:" + str(snapped(amountToDeposit,0.01)) + "\n"
+						sediment -= amountToDeposit
+						if sediment < 0.01:
+							break
 					else:
 						amountToDeposit = (sediment - sedimentCapacity) * depositSpeed
 						text += "deCap:" + str(snapped(amountToDeposit,0.01)) + "\n"
@@ -131,10 +134,10 @@ func _process(delta: float) -> void:
 					sediment += amountToErode
 					
 					text += "er:" + str(snapped(amountToErode,0.01)) + "\n"
-					for X in range(-2,2):
-						for Y in range(-2,2):
+					for X in range(-3,3):
+						for Y in range(-3,3):
 							var brushhight = data.get_height(Vector3(gridX+X,0,gridY+Y))
-							var dist = sqrt(X * X + Y * Y);
+							var dist = sqrt(X * X + Y * Y); # in the furure i bet a lot of time can be saved pre calculating the mask for the brush lol
 							data.set_height(Vector3(gridX+X,0,gridY+Y),brushhight - amountToErode/(dist+1))
 											
 				if debugSwitch:
