@@ -40,6 +40,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89647, 0)
 axis_lock_angular_x = true
 axis_lock_angular_z = true
 mass = 80.0
+freeze = true
 script = ExtResource("2_yxeup")
 
 [node name="BodyColider" type="CollisionShape3D" parent="Body"]
