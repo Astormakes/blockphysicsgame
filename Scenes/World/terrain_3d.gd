@@ -38,7 +38,7 @@ func _ready() -> void:
 		for y in range(-range,range):
 			generateRegion(Vector3(x,0,y)*region_size)
 	boundRange = range*region_size
-
+	print(boundRange)
 var dirX = 0
 var dirY = 0
 var speed = 0 # change down under
@@ -63,8 +63,8 @@ func _process(delta: float) -> void:
 
 	if Input.is_action_pressed("debugg"):
 		for t in range(100):
-			posX = randi_range(-boundRange-50,boundRange-50)
-			posY = randi_range(-boundRange-50,boundRange-50)
+			posX = randi_range(-boundRange,boundRange)/20
+			posY = randi_range(-boundRange,boundRange)/20
 			water = 1.5
 			sediment = 0
 			speed = 2
@@ -73,26 +73,21 @@ func _process(delta: float) -> void:
 			
 			var curHight = data.get_height(Vector3(posX,0,posY))
 			if curHight < 1:
-				for x in range(-3,3):
-					for y in range(-3,3):
-						posX += x
-						posY += y
+				for x in range(-2,2):
+					for y in range(-2,2):
+						var sposx = posX + x
+						var sposy = posY + y
 						var avg = 0
-						avg += curHight - data.get_height(Vector3(posX+1,0,posY+1))
-						avg += curHight - data.get_height(Vector3(posX,0,posY+1))
-						avg += curHight - data.get_height(Vector3(posX-1,0,posY+1))
-						avg += curHight - data.get_height(Vector3(posX+1,0,posY))
-						avg += curHight - data.get_height(Vector3(posX-1,0,posY))
-						avg += curHight - data.get_height(Vector3(posX+1,0,posY-1))
-						avg += curHight - data.get_height(Vector3(posX,0,posY-1))
-						avg += curHight - data.get_height(Vector3(posX-1,0,posY-1))
-						data.set_height(Vector3(posX,0,posY),curHight - avg/8)
+						avg += curHight - data.get_height(Vector3(sposx+1,0,sposy))
+						avg += curHight - data.get_height(Vector3(sposx,0,sposy+1))
+						avg += curHight - data.get_height(Vector3(sposx-1,0,sposy))
+						avg += curHight - data.get_height(Vector3(sposx,0,sposy-1))
+						data.set_height(Vector3(posX,0,posY),curHight - avg/4)
 			else:
 				for i in range(50):
 					var gridX:int = int(posX)
 					var gridY:int = int(posY)
 					var pos = Vector3(gridX,0,gridY)
-					var text = ""
 					
 					curHight = data.get_height(pos)
 						
@@ -110,7 +105,7 @@ func _process(delta: float) -> void:
 					posX += dirX
 					posY += dirY
 					
-					if abs(posX) > boundRange or abs(posYs) > boundRange:
+					if abs(posX) > boundRange or abs(posY) > boundRange:
 						break
 					
 					var deltaHeight = data.get_height(Vector3(int(posX),0,int(posY))) - curHight
