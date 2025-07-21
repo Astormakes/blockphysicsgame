@@ -22,11 +22,6 @@ GlobalBlockManager="*res://Singletons/GlobalBlockManager.gd"
 GlobalServerHandler="*res://Singletons/GlobalServerHandler.gd"
 GlobalSignals="*res://Singletons/GlobalSignals.gd"
 
-[display]
-
-window/size/viewport_width=1980
-window/size/viewport_height=1024
-
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/terrain_3d/plugin.cfg")

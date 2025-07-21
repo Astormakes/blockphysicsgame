@@ -17,6 +17,8 @@ var work:Dictionary
 var noise = FastNoiseLite.new()
 var noiseoffset = 0
 
+var boundRange
+
 func _ready() -> void:
 	print("Seed:",seed)
 	GlobalSignals.connect("GenereateNewRegion",generateRegion)
@@ -34,7 +36,8 @@ func _ready() -> void:
 	var range = 2
 	for x in range(-range,range):
 		for y in range(-range,range):
-			generateRegion(Vector3(x,0,y)*512)
+			generateRegion(Vector3(x,0,y)*region_size)
+	boundRange = range*region_size
 
 var dirX = 0
 var dirY = 0
@@ -60,8 +63,8 @@ func _process(delta: float) -> void:
 
 	if Input.is_action_pressed("debugg"):
 		for t in range(100):
-			posX = randi_range(-800,800)
-			posY = randi_range(-800,800)
+			posX = randi_range(-boundRange-50,boundRange-50)
+			posY = randi_range(-boundRange-50,boundRange-50)
 			water = 1.5
 			sediment = 0
 			speed = 2
@@ -106,6 +109,9 @@ func _process(delta: float) -> void:
 					
 					posX += dirX
 					posY += dirY
+					
+					if abs(posX) > boundRange or abs(posYs) > boundRange:
+						break
 					
 					var deltaHeight = data.get_height(Vector3(int(posX),0,int(posY))) - curHight
 					
