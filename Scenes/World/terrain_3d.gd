@@ -62,7 +62,7 @@ func _process(delta: float) -> void:
 	mutextaskwork.unlock()
 
 	if Input.is_action_pressed("debugg"):
-		for t in range(100):
+		for t in range(200):
 			posX = randi_range(-boundRange,boundRange)/2
 			posY = randi_range(-boundRange,boundRange)/2
 			water = 1.5
@@ -79,10 +79,15 @@ func _process(delta: float) -> void:
 						var sposy = posY + y
 						var avg = 0
 						avg += curHight - data.get_height(Vector3(sposx+1,0,sposy))
-						avg += curHight - data.get_height(Vector3(sposx,0,sposy+1))
 						avg += curHight - data.get_height(Vector3(sposx-1,0,sposy))
+						avg += curHight - data.get_height(Vector3(sposx,0,sposy+1))
 						avg += curHight - data.get_height(Vector3(sposx,0,sposy-1))
-						data.set_height(Vector3(posX,0,posY),curHight - avg/3)
+						avg += curHight - data.get_height(Vector3(sposx+1,0,sposy+1))
+						avg += curHight - data.get_height(Vector3(sposx,-1,sposy+1))
+						avg += curHight - data.get_height(Vector3(sposx-1,0,sposy-1))
+						avg += curHight - data.get_height(Vector3(sposx,+1,sposy+1))
+						data.set_height(Vector3(sposx,0,sposy),curHight - avg/9)
+
 			else:
 				for i in range(50):
 					var gridX:int = int(posX)
@@ -104,10 +109,8 @@ func _process(delta: float) -> void:
 					
 					posX += dirX
 					posY += dirY
-					#data.set_color(Vector3(gridX,0,gridY),Color(0))
 					
-					
-					if abs(posX) > boundRange or abs(posY) > boundRange or curHight < 0:
+					if abs(posX) > boundRange or abs(posY) > boundRange:
 						break
 					
 					var deltaHeight = data.get_height(Vector3(int(posX),0,int(posY))) - curHight
@@ -128,12 +131,12 @@ func _process(delta: float) -> void:
 						sediment += amountToErode
 						
 						data.set_height(pos,curHight - amountToErode)
-						
 					speed = sqrt(max(speed * speed - deltaHeight * gravity,0))
 					water *= (1 - evaporateSpeed)
 		data.update_maps(Terrain3DRegion.TYPE_HEIGHT)
 		data.update_maps(Terrain3DRegion.TYPE_CONTROL)
 		data.update_maps(Terrain3DRegion.TYPE_COLOR)
+		
 
 func generateRegion(pos:Vector3):
 	var existingRegions = data.get_regions_all()
