@@ -38,6 +38,7 @@ replication_config = SubResource("SceneReplicationConfig_fcuv6")
 [node name="Body" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89647, 0)
 axis_lock_angular_x = true
+axis_lock_angular_y = true
 axis_lock_angular_z = true
 mass = 80.0
 freeze = true

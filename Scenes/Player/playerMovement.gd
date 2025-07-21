@@ -6,6 +6,8 @@ var runMul = 10
 var movementDamping = Vector3(50000,300,50000)
 var Enginedelta = 0
 
+var noclip = true
+
 @onready var Head = $Head
 
 
@@ -16,6 +18,9 @@ func _process(delta: float) -> void:
 	if is_multiplayer_authority():	
 		Enginedelta = delta
 		
+		if Input.is_action_just_pressed("noclip"):
+			noclip = not noclip
+			freeze = noclip
 		var inAir = 1
 		var velocity:Vector3 = Vector3(0,0,0)
 		
@@ -34,10 +39,12 @@ func _process(delta: float) -> void:
 		if Input.is_action_pressed("crouch"):
 				velocity.y = -5
 	
-	
-		transform.origin += Head.basis * velocity
-		
-
+		if noclip:
+			transform.origin += Head.basis * velocity
+		else:
+			var head_rotation = Head.global_transform.basis.get_euler()
+			var yaw_only_basis = Basis(Vector3.UP, head_rotation.y)  # Only yaw
+			apply_central_force(yaw_only_basis * velocity*300)
 
 func _input(event):
 	if not Input.is_action_pressed("free_mouse"):
