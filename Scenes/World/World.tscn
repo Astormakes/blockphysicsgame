@@ -1,7 +1,11 @@
-[gd_scene load_steps=19 format=3 uid="uid://bvk308uh4rir3"]
+[gd_scene load_steps=25 format=3 uid="uid://bvk308uh4rir3"]
 
 [ext_resource type="Script" uid="uid://f6sdel0mc1nw" path="res://Scenes/World/worldManager.gd" id="1_3gftd"]
+[ext_resource type="Texture2D" uid="uid://c88j3oj0lf6om" path="res://demo/assets/textures/rock023_alb_ht.png" id="2_hveh7"]
 [ext_resource type="Script" uid="uid://d0xd2t3b2rx7i" path="res://Scenes/World/terrain_3d.gd" id="2_xf6vi"]
+[ext_resource type="Texture2D" uid="uid://c307hdmos4gtm" path="res://demo/assets/textures/rock023_nrm_rgh.png" id="3_87yka"]
+[ext_resource type="Texture2D" uid="uid://ddprscrpsofah" path="res://demo/assets/textures/ground037_alb_ht.png" id="4_kjd5s"]
+[ext_resource type="Texture2D" uid="uid://c1ots7w6i0i1q" path="res://demo/assets/textures/ground037_nrm_rgh.png" id="5_p7pgw"]
 
 [sub_resource type="Gradient" id="Gradient_xf6vi"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -26,14 +30,22 @@ noise = SubResource("FastNoiseLite_ouhkt")
 
 [sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_27jhl"]
 _shader_parameters = {
+&"auto_base_texture": 0,
+&"auto_height_reduction": 0.131,
+&"auto_overlay_texture": 1,
+&"auto_slope": 1.852,
 &"bias_distance": 825.9,
 &"blend_sharpness": 0.336,
 &"depth_blur": 0.0,
+&"dual_scale_far": 170.0,
+&"dual_scale_near": 100.0,
+&"dual_scale_reduction": 0.3,
+&"dual_scale_texture": 0,
 &"enable_macro_variation": true,
 &"enable_projection": true,
 &"flat_terrain_normals": false,
-&"macro_variation1": Color(1, 1, 1, 1),
-&"macro_variation2": Color(1, 1, 1, 1),
+&"macro_variation1": Color(1, 1, 0.952941, 1),
+&"macro_variation2": Color(0.894118, 1, 1, 1),
 &"macro_variation_slope": 0.333,
 &"mipmap_bias": 1.01,
 &"noise1_angle": 0.0,
@@ -41,10 +53,12 @@ _shader_parameters = {
 &"noise1_scale": 0.04,
 &"noise2_scale": 0.076,
 &"noise_texture": SubResource("NoiseTexture2D_5jr8x"),
-&"projection_threshold": 0.0
+&"projection_threshold": 0.0,
+&"tri_scale_reduction": 0.3
 }
 world_background = 0
-show_checkered = true
+auto_shader = true
+dual_scaling = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hveh7"]
 transparency = 4
@@ -64,8 +78,32 @@ last_lod = 0
 last_shadow_lod = 0
 lod0_range = 128.0
 
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_kuxid"]
+name = "rock023_alb_ht"
+albedo_color = Color(0.775063, 0.775063, 0.775063, 1)
+albedo_texture = ExtResource("2_hveh7")
+normal_texture = ExtResource("3_87yka")
+normal_depth = 1.212
+ao_strength = 0.0
+roughness = 1.0
+detiling_shift = 0.123
+
+[sub_resource type="Terrain3DTextureAsset" id="Terrain3DTextureAsset_ng1ea"]
+name = "ground037_alb_ht"
+id = 1
+albedo_color = Color(0.7314, 0.768815, 0.707688, 1)
+albedo_texture = ExtResource("4_kjd5s")
+normal_texture = ExtResource("5_p7pgw")
+normal_depth = 2.0
+ao_strength = 2.0
+roughness = 1.0
+uv_scale = 0.155
+detiling_rotation = 0.349
+detiling_shift = 0.11
+
 [sub_resource type="Terrain3DAssets" id="Terrain3DAssets_kjd5s"]
 mesh_list = Array[Terrain3DMeshAsset]([SubResource("Terrain3DMeshAsset_87yka")])
+texture_list = Array[Terrain3DTextureAsset]([SubResource("Terrain3DTextureAsset_kuxid"), SubResource("Terrain3DTextureAsset_ng1ea")])
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_nm5f3"]
 
@@ -109,7 +147,6 @@ script = ExtResource("1_3gftd")
 data_directory = "res://Scenes/World/TerrainData"
 material = SubResource("Terrain3DMaterial_27jhl")
 assets = SubResource("Terrain3DAssets_kjd5s")
-show_checkered = true
 top_level = true
 script = ExtResource("2_xf6vi")
 metadata/_edit_lock_ = true

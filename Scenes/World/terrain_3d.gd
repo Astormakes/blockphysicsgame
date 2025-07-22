@@ -63,8 +63,8 @@ func _process(delta: float) -> void:
 
 	if Input.is_action_pressed("debugg"):
 		for t in range(200):
-			posX = randi_range(-boundRange,boundRange)/2
-			posY = randi_range(-boundRange,boundRange)/2
+			posX = randi_range(-boundRange,boundRange)/10
+			posY = randi_range(-boundRange,boundRange)/10
 			water = 1.5
 			sediment = 0
 			speed = 2
