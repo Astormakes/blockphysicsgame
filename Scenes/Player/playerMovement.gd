@@ -38,6 +38,7 @@ func _process(delta: float) -> void:
 				velocity.y = 5
 		if Input.is_action_pressed("crouch"):
 				velocity.y = -5
+		
 	
 		if noclip:
 			transform.origin += Head.basis * velocity

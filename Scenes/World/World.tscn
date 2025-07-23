@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://bvk308uh4rir3"]
+[gd_scene load_steps=26 format=3 uid="uid://bvk308uh4rir3"]
 
 [ext_resource type="Script" uid="uid://f6sdel0mc1nw" path="res://Scenes/World/worldManager.gd" id="1_3gftd"]
 [ext_resource type="Texture2D" uid="uid://c88j3oj0lf6om" path="res://demo/assets/textures/rock023_alb_ht.png" id="2_hveh7"]
@@ -59,6 +59,7 @@ _shader_parameters = {
 world_background = 0
 auto_shader = true
 dual_scaling = true
+show_region_grid = true
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hveh7"]
 transparency = 4
@@ -132,6 +133,8 @@ albedo_color = Color(1, 1, 1, 0.0784314)
 material = SubResource("StandardMaterial3D_otnm7")
 size = Vector3(20, 0.5, 20)
 
+[sub_resource type="BoxMesh" id="BoxMesh_hveh7"]
+
 [sub_resource type="PlaneMesh" id="PlaneMesh_xf6vi"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ouhkt"]
@@ -147,6 +150,8 @@ script = ExtResource("1_3gftd")
 data_directory = "res://Scenes/World/TerrainData"
 material = SubResource("Terrain3DMaterial_27jhl")
 assets = SubResource("Terrain3DAssets_kjd5s")
+show_grid = true
+show_region_grid = true
 top_level = true
 script = ExtResource("2_xf6vi")
 metadata/_edit_lock_ = true
@@ -176,8 +181,12 @@ shape = SubResource("BoxShape3D_5tdn8")
 mesh = SubResource("BoxMesh_51tax")
 skeleton = NodePath("../..")
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.8057, 1.04082, 19.6962)
+mesh = SubResource("BoxMesh_hveh7")
+
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 0, -0.1, 0)
+transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 10021.2, -0.1, 10052.6)
 mesh = SubResource("PlaneMesh_xf6vi")
 surface_material_override/0 = SubResource("StandardMaterial3D_ouhkt")
 
