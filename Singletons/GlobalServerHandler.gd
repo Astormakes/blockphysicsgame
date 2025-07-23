@@ -5,12 +5,18 @@ var peer: ENetMultiplayerPeer = ENetMultiplayerPeer.new()
 var world: PackedScene = load("res://Scenes/World/World.tscn")
 var player_scene: PackedScene = load("res://Scenes/Player/player.tscn")
 
+
 var world_scene: Node = null
 
 var players = [] # ment for later, checking if a player is nearing a ungenerated region
+var playerpositions = []
 
-func _ready() -> void:
-	pass
+var regionSize = 1024
+
+func _process(delta: float) -> void:
+	playerpositions.clear()
+	for x:Node3D in players:
+		playerpositions.append(x.get_child(0).global_position)
 
 # Host a server
 func _on_host(port: int) -> void:
@@ -50,8 +56,9 @@ func add_player(id: int):
 	
 	var player = player_scene.instantiate()
 	player.name = str(id)
-	player.transform.origin.y += 25
+	player.transform.origin.y += 25 #Vector3(5000,25,5000)
 	world_scene.add_child(player) # Add to the world scene
+	players.append(player)
 	
 # Handle a new player connection (server only)
 func on_peer_connected(id: int):

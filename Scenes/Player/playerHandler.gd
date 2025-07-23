@@ -2,7 +2,6 @@ extends Node3D
 
 @onready var cam = $Body/Head/Camera3D
 
-
 var currentItemID = 0
 
 func _ready() -> void:
