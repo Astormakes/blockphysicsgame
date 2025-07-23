@@ -31,9 +31,9 @@ noise = SubResource("FastNoiseLite_ouhkt")
 [sub_resource type="Terrain3DMaterial" id="Terrain3DMaterial_27jhl"]
 _shader_parameters = {
 &"auto_base_texture": 0,
-&"auto_height_reduction": 0.131,
+&"auto_height_reduction": 0.036,
 &"auto_overlay_texture": 1,
-&"auto_slope": 1.852,
+&"auto_slope": 0.897,
 &"bias_distance": 825.9,
 &"blend_sharpness": 0.336,
 &"depth_blur": 0.0,

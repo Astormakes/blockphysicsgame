@@ -11,37 +11,35 @@ var mapdirectory = "res://Scenes/World/TerrainData/"
 func _ready() -> void:
 	GlobalSignals.connect("GenereateNewRegion",generateRegion)
 
-	region_size = 2048#2048
+	region_size = 1024#2048
 	noise.seed = seed
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
 	noise.fractal_octaves = 9
-	noise.fractal_lacunarity = 3.5 # Frequency multiplier between subsequent octaves. Increasing this value results in higher octaves producing noise with finer details
+	noise.fractal_lacunarity = 3.0 # Frequency multiplier between subsequent octaves. Increasing this value results in higher octaves producing noise with finer details
 	noise.fractal_gain = 0.30 # lower means more low frequenzy
 	noise.frequency = 1/4000.0 # higher means lower requenzy	
 	
 	
 func generateRegion(pos:Vector3):
 	var work = Terrain3DRegion.new()
-	if pos.x < region_size/2 or pos.x > region_size*32 or pos.z < region_size/2 or pos.z > region_size*32:
-		print("ERROR: Out of Bounds!")
-		return
+	#if pos.x < region_size/2 or pos.x > region_size*32 or pos.z < region_size/2 or pos.z > region_size*32:
+	#	print("ERROR: Out of Bounds!")
+	#	return
+		
+	# calculates the regions individual positions from the pos
 	var chunkPos = floor((pos-Vector3(region_size/2,0,region_size/2))/region_size)*region_size
 	var region1 = floor((chunkPos + Vector3(0,0,0))/region_size)
 	var region2 = floor((chunkPos + Vector3(region_size,0,0))/region_size)
 	var region3 = floor((chunkPos + Vector3(0,0,region_size))/region_size)
 	var region4 = floor((chunkPos + Vector3(region_size,0,region_size))/region_size)
 	
+	# creates the strings for the tres files of the map data for these 4 regions
 	var region1string = mapdirectory + "terrain3d_" + str(int(region1.x)).pad_zeros(2) + "_" + str(int(region1.z)).pad_zeros(2) + ".res"
 	var region2string = mapdirectory + "terrain3d_" + str(int(region2.x)).pad_zeros(2) + "_" + str(int(region2.z)).pad_zeros(2) + ".res"
 	var region3string = mapdirectory + "terrain3d_" + str(int(region3.x)).pad_zeros(2) + "_" + str(int(region3.z)).pad_zeros(2) + ".res"
 	var region4string = mapdirectory + "terrain3d_" + str(int(region4.x)).pad_zeros(2) + "_" + str(int(region4.z)).pad_zeros(2) + ".res"
 
-
-	print("region1:" + region1string)
-	print("region2:" + region2string)
-	print("region3:" + region3string)
-	print("region4:" + region4string)
-	
+	# checks if these regions exist based on the strings and starts a thread that will create that region if it dosent.
 	if not FileAccess.file_exists(region1string):
 		print("create region1 ", region1*region_size)
 		threads.append(Thread.new())
@@ -61,16 +59,19 @@ func generateRegion(pos:Vector3):
 		print("create region4 ", region4*region_size)
 		threads.append(Thread.new())
 		threads[threads.size()-1].start(runNoise.bind(region4*region_size),2)
-	
-	
 
+
+var letitrain = false
 func _process(delta: float) -> void:
 	if Input.is_action_just_released("debug2"):
 		data.load_directory("res://Scenes/World/TerrainData/")
 	if Input.is_action_just_pressed("debugg"):
 		var playerpos = GlobalServerHandler.playerpositions[0]
 		generateRegion(playerpos)
-	if Input.is_action_pressed("debug3"):
+	if Input.is_action_just_pressed("debug3"):
+		letitrain = not letitrain
+	
+	if letitrain:
 		rain(GlobalServerHandler.playerpositions[0])
 		
 	
@@ -92,7 +93,7 @@ func runNoise(Pos:Vector3 = Vector3(0,0,0)):
 func rain(targetpos:Vector3):
 	
 	var chunkPos = floor((targetpos+Vector3(region_size/2,0,region_size/2))/region_size)*region_size
-	for i in range(2000):
+	for i in range(500):
 		var posX = chunkPos.x + randi_range(-region_size,region_size)/2
 		var posY = chunkPos.z + randi_range(-region_size,region_size)/2
 		var water = 1.5
@@ -110,8 +111,8 @@ func rain(targetpos:Vector3):
 		
 		var curHight = data.get_height(Vector3(posX,0,posY))
 		if curHight < 1:
-			for x in range(-1,1):
-				for y in range(-1,1):
+			for x in range(-2,2):
+				for y in range(-2,2):
 					var sposx = posX + x
 					var sposy = posY + y
 					var avg = 0
@@ -120,9 +121,9 @@ func rain(targetpos:Vector3):
 					avg += curHight - data.get_height(Vector3(sposx,0,sposy+1))
 					avg += curHight - data.get_height(Vector3(sposx,0,sposy-1))
 					avg += curHight - data.get_height(Vector3(sposx+1,0,sposy+1))
-					avg += curHight - data.get_height(Vector3(sposx,-1,sposy+1))
+					avg += curHight - data.get_height(Vector3(sposx-1,0,sposy+1))
 					avg += curHight - data.get_height(Vector3(sposx-1,0,sposy-1))
-					avg += curHight - data.get_height(Vector3(sposx,+1,sposy+1))
+					avg += curHight - data.get_height(Vector3(sposx+1,0,sposy-1))
 					data.set_height(Vector3(sposx,0,sposy),curHight - avg/9)
 		else:
 			for p in range(70):
@@ -168,5 +169,6 @@ func rain(targetpos:Vector3):
 	data.update_maps(Terrain3DRegion.TYPE_HEIGHT)
 
 func _exit_tree() -> void:
+	
 	for t in threads:
 		t.wait_to_finish()
