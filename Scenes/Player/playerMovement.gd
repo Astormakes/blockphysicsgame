@@ -21,7 +21,6 @@ func _process(delta: float) -> void:
 		if Input.is_action_just_pressed("noclip"):
 			noclip = not noclip
 			freeze = noclip
-		var inAir = 1
 		var velocity:Vector3 = Vector3(0,0,0)
 		
 		if Input.is_action_pressed('forward'):
