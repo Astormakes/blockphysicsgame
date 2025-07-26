@@ -157,4 +157,5 @@ noclip={
 
 [rendering]
 
-limits/spatial_indexer/threaded_cull_minimum_instances=16000
+lights_and_shadows/directional_shadow/size=2048
+limits/spatial_indexer/threaded_cull_minimum_instances=8000

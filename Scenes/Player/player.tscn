@@ -82,7 +82,7 @@ script = ExtResource("4_htcer")
 
 [node name="Camera3D" type="Camera3D" parent="Body/Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
-far = 8000.0
+far = 32000.0
 
 [node name="Ghost" type="MeshInstance3D" parent="Body/Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)

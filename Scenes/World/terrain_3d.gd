@@ -83,8 +83,24 @@ func runNoise(Pos:Vector3 = Vector3(0,0,0)):
 			for y in imgy:
 				var hight = noise.get_noise_2d(x + Pos.x, y + Pos.z)*1000
 				img.set_pixel(x, y,Color(hight, 0., 0., 1.))
-		var savestring = mapdirectory + "terrain3d_" + str(int(Pos.x/region_size)).pad_zeros(2) + "_" + str(int(Pos.z/region_size)).pad_zeros(2) + ".res"
+		
+		var posStringX
+		if Pos.x >= 0:
+			posStringX = "_" + str(int(Pos.x/region_size)).pad_zeros(2)
+		else:
+			posStringX = str(int(Pos.x/region_size)).pad_zeros(2)
+		
+		var posStringY
+		if Pos.z >= 0:
+			posStringY = "_" + str(int(Pos.z/region_size)).pad_zeros(2)
+			print("p",posStringY)
+		else:
+			posStringY = str(int(Pos.z/region_size)).pad_zeros(2)
+			print("n",posStringY)
+			
+		var savestring = mapdirectory + "terrain3d" + posStringX + posStringY + ".res"
 		var region = Terrain3DRegion.new()
+		
 		region.region_size = region_size
 		region.location = Vector2i(floor(Pos.x/region_size),floor(Pos.z/region_size))
 		region.set_map(Terrain3DRegion.TYPE_HEIGHT,img)
