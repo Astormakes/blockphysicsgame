@@ -13,7 +13,7 @@ var playerpositions = []
 
 var regionSize = 1024
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	playerpositions.clear()
 	for x:Node3D in players:
 		playerpositions.append(x.get_child(0).global_position)
@@ -34,7 +34,7 @@ func _on_host(port: int) -> void:
 	add_child(world_scene)
 	
 	# Add the host player
-	var newplayer = add_player(multiplayer.get_unique_id())
+	add_player(multiplayer.get_unique_id())
 # Join as a client
 func _on_join(ip: String, port: int) -> void:
 	peer.create_client(ip, port)
