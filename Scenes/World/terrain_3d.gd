@@ -105,7 +105,7 @@ func generate(pos:Vector3):
 	for i in range(4):
 		stiched.blit_rect(imgs[i], Rect2i(Vector2i.ZERO, size), positions[i])
 	
-	var iterations = region_size*1000
+	var iterations = region_size*2000
 	for i in range(iterations):
 		#if i % (iterations/100) == 0:
 			#print(ceil((float(i)/iterations)*100))
