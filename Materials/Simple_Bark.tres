@@ -1,0 +1,23 @@
+[gd_resource type="StandardMaterial3D" load_steps=5 format=3 uid="uid://dmrhskiidl052"]
+
+[ext_resource type="Texture2D" uid="uid://cs0wv421ywyr5" path="res://Graphics/Bark004_1K-PNG/Bark004_1K-PNG_Color.png" id="1_qqvvq"]
+[ext_resource type="Texture2D" uid="uid://diqr231bjqugc" path="res://Graphics/Bark004_1K-PNG/Bark004_1K-PNG_AmbientOcclusion.png" id="2_5trq0"]
+[ext_resource type="Texture2D" uid="uid://fpj8cqb51yim" path="res://Graphics/Bark004_1K-PNG/Bark004_1K-PNG_NormalGL.png" id="3_hwtbw"]
+[ext_resource type="Texture2D" uid="uid://ctmbkgc77twti" path="res://Graphics/Bark004_1K-PNG/Bark004_1K-PNG_Displacement.png" id="4_qqvvq"]
+
+[resource]
+albedo_color = Color(0.830335, 0.830335, 0.830335, 1)
+albedo_texture = ExtResource("1_qqvvq")
+metallic_specular = 0.0
+roughness = 0.08
+roughness_texture = ExtResource("4_qqvvq")
+roughness_texture_channel = 4
+normal_enabled = true
+normal_scale = 0.71
+normal_texture = ExtResource("3_hwtbw")
+ao_enabled = true
+ao_light_affect = 0.53
+ao_texture = ExtResource("2_5trq0")
+heightmap_scale = 10.015
+refraction_scale = -0.02
+uv1_scale = Vector3(1.225, 1, 1.5)

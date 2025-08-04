@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://bvk308uh4rir3"]
+[gd_scene load_steps=27 format=3 uid="uid://bvk308uh4rir3"]
 
 [ext_resource type="Script" uid="uid://f6sdel0mc1nw" path="res://Scenes/World/worldManager.gd" id="1_3gftd"]
 [ext_resource type="Texture2D" uid="uid://c88j3oj0lf6om" path="res://demo/assets/textures/rock023_alb_ht.png" id="2_hveh7"]
@@ -6,8 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://c307hdmos4gtm" path="res://demo/assets/textures/rock023_nrm_rgh.png" id="3_87yka"]
 [ext_resource type="Texture2D" uid="uid://ddprscrpsofah" path="res://demo/assets/textures/ground037_alb_ht.png" id="4_kjd5s"]
 [ext_resource type="Texture2D" uid="uid://c1ots7w6i0i1q" path="res://demo/assets/textures/ground037_nrm_rgh.png" id="5_p7pgw"]
-[ext_resource type="PackedScene" uid="uid://bkhy6weyts6nv" path="res://Scenes/Natural/tree.tscn" id="7_87yka"]
-[ext_resource type="Material" uid="uid://sm4e8k5k0exc" path="res://Materials/simple_Leafes.tres" id="7_kjd5s"]
+[ext_resource type="Material" uid="uid://dmrhskiidl052" path="res://Materials/Simple_Bark.tres" id="7_kjd5s"]
+[ext_resource type="Material" uid="uid://cc8a6fncbxsv1" path="res://Materials/Water.tres" id="8_kjd5s"]
 
 [sub_resource type="Gradient" id="Gradient_xf6vi"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -137,12 +137,6 @@ size = Vector3(20, 0.5, 20)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_xf6vi"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ouhkt"]
-blend_mode = 3
-cull_mode = 2
-vertex_color_use_as_albedo = true
-albedo_color = Color(0, 0.607843, 1, 0.364706)
-
 [node name="World" type="Node"]
 script = ExtResource("1_3gftd")
 
@@ -192,44 +186,7 @@ material_override = ExtResource("7_kjd5s")
 mesh = SubResource("BoxMesh_hveh7")
 
 [node name="Watertemp" type="MeshInstance3D" parent="."]
-transform = Transform3D(90000, 0, 0, 0, 90000, 0, 0, 0, 90000, 0, -0.1, 0)
+transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 4.47299, 1.6218, -1.25397)
+material_override = ExtResource("8_kjd5s")
 mesh = SubResource("PlaneMesh_xf6vi")
-surface_material_override/0 = SubResource("StandardMaterial3D_ouhkt")
-
-[node name="Label3D" type="Label3D" parent="."]
-
-[node name="Tree" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.7123, 20, 5.14081)
-
-[node name="Tree2" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.51608, 20, -12.2891)
-
-[node name="Tree3" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.84073, 20, -0.910671)
-
-[node name="Tree4" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.0517, 20, 8.92279)
-
-[node name="Tree5" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.6053, 20, -14.8601)
-
-[node name="Tree6" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.84883, 20, 0.00652361)
-
-[node name="Tree7" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0732908, 20, -2.61807)
-
-[node name="Tree8" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.757, 20, -10.0794)
-
-[node name="Tree9" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.1488, 20, -2.72445)
-
-[node name="Tree10" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.6698, 20, 10.55)
-
-[node name="Tree11" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8414, 20, -10.359)
-
-[node name="Tree12" parent="." instance=ExtResource("7_87yka")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.2978, 20, 12.2604)
+surface_material_override/0 = ExtResource("8_kjd5s")

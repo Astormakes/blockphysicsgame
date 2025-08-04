@@ -1,5 +1,9 @@
 extends Node3D
 
+
+## This will determin the Growcycles that will be done on spawn. 40 will make a devent pregrown oak
+@export var pre_grow = 0
+
 var selfnutriantuse = 0.1
 var maxsegmentage = 20
 var maxStalklenght = 1
@@ -25,16 +29,45 @@ class TreeSegment:
 
 var meshes:Array
 
+var STBranches:SurfaceTool
+var branch_mesh
+
+var STLeaves:SurfaceTool = SurfaceTool.new()
+var leaf_mesh
+
 var root:TreeSegment
 
+func _init(pre_grow_amount:int = 0) -> void:
+	pre_grow = pre_grow_amount
+
 func _ready() -> void:
+	STBranches  = SurfaceTool.new()
+	
 	root = TreeSegment.new(Vector3.ZERO,Vector3.UP/2,0.1)
+	
+	for x in range(pre_grow):
+		grow_tree(randf_range(0.5,1),root)
+	
+	
+	STBranches.begin(Mesh.PRIMITIVE_TRIANGLES)
+	STLeaves.begin(Mesh.PRIMITIVE_TRIANGLES)
+	
 	draw_tree(root)
 	
-	#var leaf:MeshInstance3D = create_leaf_plane(Vector3.FORWARD,-Vector3.FORWARD*2)
-	#add_child(leaf)
+	STBranches.generate_normals()
+	branch_mesh = MeshInstance3D.new()
+	branch_mesh.material_override = preload("res://Materials/Simple_Bark.tres")
+	branch_mesh.mesh = STBranches.commit()
+	add_child(branch_mesh)
 	
-	
+	STLeaves.generate_normals()
+	leaf_mesh = MeshInstance3D.new()
+	leaf_mesh.material_override = preload("res://Materials/simple_Leafes.tres")
+	leaf_mesh.mesh = STLeaves.commit()
+	add_child(leaf_mesh)
+
+
+
 func grow_tree(nut:float, segment:TreeSegment):
 	
 	nut = nut * (0.7 + min(segment.strength,0.3))
@@ -54,7 +87,7 @@ func grow_tree(nut:float, segment:TreeSegment):
 			var branch = TreeSegment.new(new_pos,new_dir,segment.strength*0.8)
 			segment.children.append(branch)
 
-			if segment.depth < 8:
+			if segment.depth < 9:
 				#create side branches
 				var dir_normal = segment.direction.normalized()
 				var branch_angle = randf_range(PI / brachmaxangel, PI / branchminangle)  # 40°–70°
@@ -78,41 +111,40 @@ func grow_tree(nut:float, segment:TreeSegment):
 			grow_tree(nut,x)
 
 func draw_tree(segment:TreeSegment):
+
 	var end_strenght
 	if segment.children.is_empty():
 		end_strenght = 0
 	else:
 		end_strenght = segment.children[0].strength
 	
-	var mesh = create_tapered_cylinder(segment.position,segment.position + segment.direction,segment.strength,end_strenght)
+	create_tapered_cylinder(segment.position,segment.position + segment.direction,segment.strength,end_strenght)
 	
-	
-	var leafSize = min(segment.depth/3.0,1.5)/1.2
-	
-	var leaf1:MeshInstance3D = create_leaf_plane(segment.position,segment.direction,leafSize)
-	
-	add_child(leaf1)
-	meshes.append(leaf1)
-
-	add_child(mesh)
-	meshes.append(mesh)
+	var leafSize = min(segment.depth/2.0,1.5)/1.5
+	if segment.depth > 2:
+		create_leaf_plane(segment.position,segment.direction,leafSize)
 	
 	for x in segment.children:
 		draw_tree(x)
 
+
+
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("debug3"):
 		grow_tree(0.5,root)
-		for x:Node3D in meshes:
-			x.queue_free()
-			meshes.erase(x)
+
+		STBranches.begin(Mesh.PRIMITIVE_TRIANGLES)
+		STLeaves.begin(Mesh.PRIMITIVE_TRIANGLES)
+		
 		draw_tree(root)
+		
+		STLeaves.generate_normals()
+		STBranches.generate_normals()
+		leaf_mesh.mesh = STLeaves.commit()
+		branch_mesh.mesh = STBranches.commit()
 
 
 func create_tapered_cylinder(start_pos: Vector3, end_pos: Vector3, start_radius: float, end_radius: float, segments: int = 8) -> MeshInstance3D:
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-
 	var direction = end_pos - start_pos
 	var length = direction.length()
 	if length == 0:
@@ -136,6 +168,9 @@ func create_tapered_cylinder(start_pos: Vector3, end_pos: Vector3, start_radius:
 		var angle1 = TAU * float(i) / segments
 		var angle2 = TAU * float(i + 1) / segments
 
+		var u1 = float(i) / segments
+		var u2 = float(i + 1) / segments
+
 		# Local circle positions
 		var circle1_start = x_axis * cos(angle1) + y_axis * sin(angle1)
 		var circle1_end = x_axis * cos(angle2) + y_axis * sin(angle2)
@@ -148,33 +183,31 @@ func create_tapered_cylinder(start_pos: Vector3, end_pos: Vector3, start_radius:
 		var p3 = end_pos + circle1_end * end_radius
 		var p4 = end_pos + circle1_start * end_radius
 
-		# Triangle winding to face outwards
-		st.add_vertex(p1)
-		st.add_vertex(p2)
-		st.add_vertex(p3)
+		# UV coordinates
+		var v_bottom = 0.0
+		var v_top = 1.0
+		STBranches.set_uv(Vector2(u1, v_bottom))
+		STBranches.add_vertex(p1)
 
-		st.add_vertex(p1)
-		st.add_vertex(p3)
-		st.add_vertex(p4)
+		STBranches.set_uv(Vector2(u2, v_bottom))
+		STBranches.add_vertex(p2)
 
-	st.generate_normals()
-	var mesh = st.commit()
+		STBranches.set_uv(Vector2(u2, v_top))
+		STBranches.add_vertex(p3)
 
-	var mesh_instance = MeshInstance3D.new()
-	mesh_instance.mesh = mesh
-	return mesh_instance
-	
-	
+		STBranches.set_uv(Vector2(u1, v_bottom))
+		STBranches.add_vertex(p1)
+		
+		STBranches.set_uv(Vector2(u2, v_top))
+		STBranches.add_vertex(p3)
+
+		
+		STBranches.set_uv(Vector2(u1, v_top))
+		STBranches.add_vertex(p4)
+	return 
+
 func create_leaf_plane(position: Vector3, direction: Vector3,size:float = 1) -> MeshInstance3D:
-	var st:SurfaceTool = SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	
-	#var up = direction.normalized()
-	#var right = up.cross(Vector3.RIGHT).normalized()
-	#if right.length_squared() == 0:
-	#	right = up.cross(Vector3.FORWARD).normalized()
-	#var forward = right.cross(up).normalized()
-	
+
 	var up = direction.normalized()
 
 	# Pick a fallback vector not parallel to up
@@ -202,23 +235,23 @@ func create_leaf_plane(position: Vector3, direction: Vector3,size:float = 1) -> 
 	var p4 = position + right * half_width - up * half_height
 	
 
-	st.set_uv(Vector2(0,1))
-	st.add_vertex(p1)
-	st.set_uv(Vector2(1,1))
-	st.add_vertex(p2)
-	st.set_uv(Vector2(1,0))
-	st.add_vertex(p3)
-	st.set_uv(Vector2(0,1))
-	st.add_vertex(p1)
-	st.set_uv(Vector2(1,0))
-	st.add_vertex(p3)
-	st.set_uv(Vector2(0,0))
-	st.add_vertex(p4)
+	STLeaves.set_uv(Vector2(0,1))
+	STLeaves.add_vertex(p1)
+	STLeaves.set_uv(Vector2(1,1))
+	STLeaves.add_vertex(p2)
+	STLeaves.set_uv(Vector2(1,0))
+	STLeaves.add_vertex(p3)
+	STLeaves.set_uv(Vector2(0,1))
+	STLeaves.add_vertex(p1)
+	STLeaves.set_uv(Vector2(1,0))
+	STLeaves.add_vertex(p3)
+	STLeaves.set_uv(Vector2(0,0))
+	STLeaves.add_vertex(p4)
 
-	st.generate_normals()
-	var mesh = st.commit()
+	#STLeaves.generate_normals()
+	#var mesh = STLeaves.commit()
 
-	var mi := MeshInstance3D.new()
-	mi.mesh = mesh
-	mi.material_override = preload("res://Materials/simple_Leafes.tres")
-	return mi
+	#var mi := MeshInstance3D.new()
+	#mi.mesh = mesh
+	#mi.material_override = preload("res://Materials/simple_Leafes.tres")
+	return #mi

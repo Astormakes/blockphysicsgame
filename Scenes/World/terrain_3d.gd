@@ -23,7 +23,6 @@ func _ready() -> void:
 	
 	checkCoordinates  = spiral_coordinates(max_distance)
 
-	
 	region_size = set_region_size
 	noise.seed = Gameseed
 	noise.noise_type = FastNoiseLite.TYPE_PERLIN
@@ -31,7 +30,7 @@ func _ready() -> void:
 	noise.fractal_lacunarity = 3.0 # Frequency multiplier between subsequent octaves. Increasing this value results in higher octaves producing noise with finer details
 	noise.fractal_gain = 0.30 # lower means more low frequenzy
 	noise.frequency = 1/4000.0 # higher means lower requenzy	
-	
+
 func generateRegion(pos:Vector3):
 	threads.append(Thread.new())
 	threads[threads.size()-1].start(generate.bind(pos)) # starts the generating of regions and saves them as regions in the data directory
@@ -280,7 +279,8 @@ func runNoise(Pos:Vector3 = Vector3(0,0,0)):
 		var imgy = img.get_width()
 		for x in imgx:
 			for y in imgy:
-				var hight = noise.get_noise_2d(x + Pos.x, y + Pos.z)*1000
+				var hight = noise.get_noise_2d(x + Pos.x, y + Pos.z)*500
+				if hight < 0: hight = -pow(hight,1.5)
 				img.set_pixel(x, y,Color(hight, 0., 0., 1.))
 		
 		var posStringX
