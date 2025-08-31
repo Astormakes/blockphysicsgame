@@ -27,6 +27,8 @@ class TreeSegment:
 		direction = dir
 		strength = str
 
+var randnoise = FastNoiseLite.new()
+
 var meshes:Array
 
 var STBranches:SurfaceTool
@@ -35,6 +37,8 @@ var branch_mesh
 var STLeaves:SurfaceTool = SurfaceTool.new()
 var leaf_mesh
 
+var noisecounter = 0
+
 var root:TreeSegment
 
 func _init(pre_grow_amount:int = 0) -> void:
@@ -42,6 +46,9 @@ func _init(pre_grow_amount:int = 0) -> void:
 
 func _ready() -> void:
 	STBranches  = SurfaceTool.new()
+	
+	randnoise.seed = transform.origin.x + transform.origin.y + transform.origin.z 
+	randnoise.frequency = 2
 	
 	root = TreeSegment.new(Vector3.ZERO,Vector3.UP/2,0.1)
 	
@@ -66,8 +73,11 @@ func _ready() -> void:
 	leaf_mesh.mesh = STLeaves.commit()
 	add_child(leaf_mesh)
 
-
-
+func getseedednoise(rangemin:float=0, rangemax:float=1):
+	noisecounter += 1
+	var random = randnoise.get_noise_1d(noisecounter)
+	return rangemin + ((random + 1) * 0.5) * (rangemax - rangemin)
+	
 func grow_tree(nut:float, segment:TreeSegment):
 	
 	nut = nut * (0.7 + min(segment.strength,0.3))
@@ -81,7 +91,7 @@ func grow_tree(nut:float, segment:TreeSegment):
 		if segment.direction.length() > maxStalklenght:
 			# create and add the main stamm.
 			var ranrage = (1-limbstraightness)*newLimbLenght 
-			var new_dir = segment.direction/5 + Vector3(randf_range(-ranrage,ranrage),randf_range(growdown,growUp),randf_range(-ranrage,ranrage))
+			var new_dir = segment.direction/5 + Vector3(getseedednoise(-ranrage,ranrage),getseedednoise(growdown,growUp),getseedednoise(-ranrage,ranrage))
 			var new_pos = segment.position + segment.direction
 			
 			var branch = TreeSegment.new(new_pos,new_dir,segment.strength*0.8)
@@ -90,15 +100,15 @@ func grow_tree(nut:float, segment:TreeSegment):
 			if segment.depth < 9:
 				#create side branches
 				var dir_normal = segment.direction.normalized()
-				var branch_angle = randf_range(PI / brachmaxangel, PI / branchminangle)  # 40°–70°
+				var branch_angle = getseedednoise(PI / brachmaxangel, PI / branchminangle)  # 40°–70°
 				var axis = dir_normal.cross(Vector3.UP).normalized()
 				if axis.length_squared() == 0:
 					axis = Vector3.RIGHT
 				new_dir = dir_normal.rotated(axis, branch_angle).normalized()
-				new_dir = new_dir.rotated(dir_normal, randf_range(-PI, PI))  # Add twist
-				new_dir *= segment.direction.length() * randf_range(0.01, 0.2)
+				new_dir = new_dir.rotated(dir_normal, getseedednoise(-PI, PI))  # Add twist
+				new_dir *= segment.direction.length() * getseedednoise(0.01, 0.2)
 				new_pos = segment.position + segment.direction
-				var new_strength = segment.strength * randf_range(0.1, 0.2)
+				var new_strength = segment.strength * getseedednoise(0.1, 0.2)
 
 				var child = TreeSegment.new(new_pos, new_dir, new_strength)
 				segment.children.append(child)
@@ -126,8 +136,6 @@ func draw_tree(segment:TreeSegment):
 	
 	for x in segment.children:
 		draw_tree(x)
-
-
 
 func _process(delta: float) -> void:
 	if Input.is_action_pressed("debug3"):

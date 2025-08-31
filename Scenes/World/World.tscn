@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bvk308uh4rir3"]
+[gd_scene load_steps=28 format=3 uid="uid://bvk308uh4rir3"]
 
 [ext_resource type="Script" uid="uid://f6sdel0mc1nw" path="res://Scenes/World/worldManager.gd" id="1_3gftd"]
 [ext_resource type="Texture2D" uid="uid://c88j3oj0lf6om" path="res://demo/assets/textures/rock023_alb_ht.png" id="2_hveh7"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://c1ots7w6i0i1q" path="res://demo/assets/textures/ground037_nrm_rgh.png" id="5_p7pgw"]
 [ext_resource type="Material" uid="uid://dmrhskiidl052" path="res://Materials/Simple_Bark.tres" id="7_kjd5s"]
 [ext_resource type="Material" uid="uid://cc8a6fncbxsv1" path="res://Materials/Water.tres" id="8_kjd5s"]
+[ext_resource type="PackedScene" uid="uid://bkhy6weyts6nv" path="res://Scenes/Natural/OakTree.tscn" id="9_p7pgw"]
 
 [sub_resource type="Gradient" id="Gradient_xf6vi"]
 offsets = PackedFloat32Array(0.2, 1)
@@ -120,6 +121,13 @@ background_mode = 2
 sky = SubResource("Sky_87yka")
 tonemap_mode = 2
 glow_enabled = true
+fog_mode = 1
+fog_sun_scatter = 0.46
+fog_density = 1.0
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.005
+volumetric_fog_ambient_inject = 0.67
+volumetric_fog_sky_affect = 0.0
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5tdn8"]
 size = Vector3(20, 0.5, 20)
@@ -145,6 +153,8 @@ data_directory = "res://Scenes/World/TerrainData"
 material = SubResource("Terrain3DMaterial_27jhl")
 assets = SubResource("Terrain3DAssets_kjd5s")
 show_grid = true
+collision_mode = 0
+collision_radius = 80
 mesh_lods = 8
 mesh_size = 64
 show_region_grid = true
@@ -186,7 +196,16 @@ material_override = ExtResource("7_kjd5s")
 mesh = SubResource("BoxMesh_hveh7")
 
 [node name="Watertemp" type="MeshInstance3D" parent="."]
-transform = Transform3D(1000, 0, 0, 0, 1000, 0, 0, 0, 1000, 4.47299, 1.6218, -1.25397)
+transform = Transform3D(10000, 0, 0, 0, 10000, 0, 0, 0, 10000, 4.47299, 1.6218, -1.25397)
 material_override = ExtResource("8_kjd5s")
 mesh = SubResource("PlaneMesh_xf6vi")
 surface_material_override/0 = ExtResource("8_kjd5s")
+
+[node name="Tree" parent="." instance=ExtResource("9_p7pgw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.4537, -3.93468)
+
+[node name="Tree2" parent="." instance=ExtResource("9_p7pgw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.8183, 19.2396, -7.86935)
+
+[node name="Tree3" parent="." instance=ExtResource("9_p7pgw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1477, 19.5094, 15.7868)

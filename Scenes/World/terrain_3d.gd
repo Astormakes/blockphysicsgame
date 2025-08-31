@@ -1,8 +1,11 @@
 extends Terrain3D
 
-var Gameseed = Time.get_unix_time_from_system()#0 #402
+var Gameseed = 1337 #Time.get_unix_time_from_system()#0 #402
 const set_region_size = 1024
 var max_distance = 32 # in chunks
+
+var RainDrops = 5
+
 
 var threads:Array
 var chunks:Dictionary
@@ -10,6 +13,8 @@ var noise = FastNoiseLite.new()
 
 var mapdirectory = "res://Scenes/World/TerrainData/"
 var tempdirectory = "res://Scenes/World/Temp/"
+
+var framecounter = 0
 
 var outputmutex = Mutex.new()
 var output_regions:Array 
@@ -104,7 +109,7 @@ func generate(pos:Vector3):
 	for i in range(4):
 		stiched.blit_rect(imgs[i], Rect2i(Vector2i.ZERO, size), positions[i])
 	
-	var iterations = region_size*2000
+	var iterations = region_size*RainDrops
 	for i in range(iterations):
 		#if i % (iterations/100) == 0:
 			#print(ceil((float(i)/iterations)*100))
@@ -189,9 +194,18 @@ func generate(pos:Vector3):
 		outputmutex.lock()
 		output_regions.append(tempregion)
 		outputmutex.unlock()
+		tempregion.save()
 	return
-	
-var framecounter = 0
+	#
+	#
+	# The current Issue is: When a new region is added its a whole draw call to the GPU ... and so far godot dosent have an other way of doing it ... 
+	# So Specific Regions have to be loaded and unloaded based on the players position and viewing range. 
+	# Basically once a thread is done with a region i t should be saved directly. 
+	# then the players should check which regions to load or not. 
+	# If the a Regions generation is started then it can be removed from the folder, i think this might have the posibility to fix the "what to generate" issue
+	# also the regions the player loads should be dependent on his speed.
+	#
+
 func _process(_delta: float) -> void:
 
 	# fetches the output from the threads
@@ -199,79 +213,73 @@ func _process(_delta: float) -> void:
 	output.append_array(output_regions.duplicate())
 	output_regions.clear()
 	outputmutex.unlock()
-	
-	# lodas the regions one per frame to prevent laggspikes
-	
-	if Input.is_action_just_pressed("debug2"):
-		data.load_directory(mapdirectory)
 		
 	# every 1000 frames check to upudate chunks
-	if framecounter < 120:
+	if framecounter < 15:
 		framecounter += 1
 	else:
 		framecounter = 0
 		
 		if output.size() > 0:
-			var x:Terrain3DRegion = output.pop_back()
-			data.add_region(x,true)
-			data.save_region(x.location,mapdirectory)
-#	if framecounter == 50:
-#		
+			#var x:Terrain3DRegion = output.pop_back()
+			data.add_region(output.pop_back(),true)
+			#data.save_region(x.location,mapdirectory)
+			
 		
 	if Input.is_action_just_pressed("debugg"):
-		print("running regions ",wip_chunks.size())
-		var regionstring = ["","","",""]
-		var region:Array
-		for pos in checkCoordinates:
-			pos *= region_size
-			var chunkPos = floor((pos-Vector2(region_size/2,region_size/2))/region_size)*region_size
-			region = [null,null,null,null]
-			region[0] = floor((chunkPos + Vector2(0,0))/region_size)
-			region[1] = floor((chunkPos + Vector2(region_size,0))/region_size)
-			region[2] = floor((chunkPos + Vector2(0,region_size))/region_size)
-			region[3] = floor((chunkPos + Vector2(region_size,region_size))/region_size)
-			
-			for i in range(4):
-				var posStringX
-				if region[i].x >= 0:
-					posStringX = "_" + str(int(region[i].x)).pad_zeros(2)
-				else:
-					posStringX = str(int(region[i].x)).pad_zeros(2)
-					
-				var posStringY
-				if region[i].y >= 0:
-					posStringY = "_" + str(int(region[i].y)).pad_zeros(2)
-				else:
-					posStringY = str(int(region[i].y)).pad_zeros(2)
-				
-				regionstring[i] = mapdirectory + "terrain3d" + posStringX + posStringY + ".res"
+		initiate_regiongeneration()
+
+
+func initiate_regiongeneration():
+	print("running regions ",wip_chunks.size())
+	var regionstring = ["","","",""]
+	var region:Array
+	for pos in checkCoordinates:
+		pos *= region_size
+		var chunkPos = floor((pos-Vector2(region_size/2,region_size/2))/region_size)*region_size
+		region = [null,null,null,null]
+		region[0] = floor((chunkPos + Vector2(0,0))/region_size)
+		region[1] = floor((chunkPos + Vector2(region_size,0))/region_size)
+		region[2] = floor((chunkPos + Vector2(0,region_size))/region_size)
+		region[3] = floor((chunkPos + Vector2(region_size,region_size))/region_size)
 		
-			var is_done = true
-			for i in range(4):
-				if not FileAccess.file_exists(regionstring[i]):
-					is_done = false
-			if is_done == false:
-				var is_not_wip = true
-				for regionpos in region:
-					if wip_chunks.has(regionpos):
-						wip_chunks.erase(regionpos)
-						is_not_wip = false
-				if is_not_wip:
-					if true:#wip_chunks.size() < 4:
-						wip_chunks.append_array(region)
-						generateRegion(Vector3(pos.x,0,pos.y))
-						print("starting ",wip_chunks)
-					break
-			#else:
-			#	if wip_chunks.size() > 0:
-			#		print("clearing ",wip_chunks)
-			#		for r in region:
-			#			if wip_chunks.has(r):
-			#				pass
-			#				#wip_chunks.erase(r)
-			#		print("cleared ", wip_chunks)
-
-
+		# create the Region Strings to Check for allready done regions
+		for i in range(4):
+			var posStringX
+			if region[i].x >= 0:
+				posStringX = "_" + str(int(region[i].x)).pad_zeros(2)
+			else:
+				posStringX = str(int(region[i].x)).pad_zeros(2)
+				
+			var posStringY
+			if region[i].y >= 0:
+				posStringY = "_" + str(int(region[i].y)).pad_zeros(2)
+			else:
+				posStringY = str(int(region[i].y)).pad_zeros(2)
+			
+			regionstring[i] = mapdirectory + "terrain3d" + posStringX + posStringY + ".res"
+		
+		# check if the MapFiles have been Created Allrady.
+		var is_done = true
+		for i in range(4):
+			if not FileAccess.file_exists(regionstring[i]):
+				is_done = false
+		
+		if is_done == false: #if not all maps have been generated 
+			var is_not_wip = true
+			for regionpos in region:
+				if wip_chunks.has(regionpos):
+					is_not_wip = false
+			if is_not_wip:
+				wip_chunks.append_array(region)
+				generateRegion(Vector3(pos.x,0,pos.y))
+				print("starting ",wip_chunks)
+				break
+		else:
+			for r in region:
+				if wip_chunks.has(r):
+					print("erased:",r)
+					wip_chunks.erase(r)
 
 func runNoise(Pos:Vector3 = Vector3(0,0,0)):
 		var img: Image = Image.create_empty(region_size, region_size, false, Image.FORMAT_RF)
@@ -279,8 +287,11 @@ func runNoise(Pos:Vector3 = Vector3(0,0,0)):
 		var imgy = img.get_width()
 		for x in imgx:
 			for y in imgy:
-				var hight = noise.get_noise_2d(x + Pos.x, y + Pos.z)*500
-				if hight < 0: hight = -pow(hight,1.5)
+				var hight = -0.1+noise.get_noise_2d(x + Pos.x, y + Pos.z)*700
+				if hight < 0: 
+					hight = -pow(-hight,1.1)
+				else:
+					hight = pow(hight,1.05)
 				img.set_pixel(x, y,Color(hight, 0., 0., 1.))
 		
 		var posStringX
@@ -329,7 +340,3 @@ func spiral_coordinates(distance: int) -> Array:
 		steps += 1
 
 	return coords
-
-func _exit_tree() -> void:
-	for t:Thread in threads:
-		t.wait_to_finish()
