@@ -17,6 +17,9 @@ As a complete novice when it comes to game design and my only serious programmin
 
 But in some Ways im Suprised of myself. Im glad that my spelling issues arent also effecting my programming too much xD
 
+Edit: I started a new one becasue this one feature Creeped into oblivion. 
+
+
 ## Design Goals
 The core design philosophy is believability: when a player does something, the expected thing should happen, consistently. Cemical Reactions should be discoverable, logical and belivable. I want to allow and encourage the player to think outside the box without crashing their expectations.
 
